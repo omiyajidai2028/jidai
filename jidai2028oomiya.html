@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2028年 大宮学区 時代祭 特設サイト</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           基本設定・変数
+        ========================================= */
+        :root {
+            --color-bg: #F9F8F6;
+            --color-text: #2C2C2C;
+            --color-text-light: #555555;
+            --color-primary: #005931;
+            --color-primary-dark: #003d22;
+            --color-accent: #8A6B4E;
+            --color-timer-bg: #F0EDE6;
+            --font-serif: 'Noto Serif JP', serif;
+            --font-sans: 'Noto Sans JP', sans-serif;
+            --font-number: 'Courier Prime', monospace;
+            --header-height: 60px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            padding-top: var(--header-height);
+            padding-bottom: 80px;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            font-family: var(--font-sans);
+            font-size: 16px;
+            line-height: 1.8;
+            letter-spacing: 0.05em;
+            font-feature-settings: "palt";
+        }
+
+        h1, h2, h3, h4 {
+            font-family: var(--font-serif);
+            line-height: 1.4;
+            margin-top: 0;
+        }
+
+        a {
+            color: var(--color-primary);
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        a:hover {
+            opacity: 0.7;
+        }
+
+        /* =========================================
+           レイアウト・共通パーツ
+        ========================================= */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            color: var(--color-primary);
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 2px;
+            background-color: var(--color-accent);
+            margin: 16px auto 0;
+        }
+
+        section {
+            scroll-margin-top: var(--header-height);
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin: 40px 0;
+            background-color: #000;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* =========================================
+           ヘッダー（上部固定）
+        ========================================= */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--header-height);
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-links a {
+            color: var(--color-text);
+        }
+
+        .nav-links a:hover {
+            color: var(--color-primary);
+        }
+
+        /* =========================================
+           Hero セクション（トップ）
+        ========================================= */
+        #hero {
+            padding: 80px 20px 60px;
+            text-align: center;
+            background: linear-gradient(180deg, #FFFFFF 0%, var(--color-bg) 100%);
+        }
+
+        .hero-catch {
+            font-size: 1.5rem; /* フォールバック */
+            font-size: clamp(1.5rem, 5vw, 2.2rem);
+            color: var(--color-primary);
+            margin-bottom: 24px;
+        }
+
+        .hero-lead {
+            font-size: 1.1rem;
+            color: var(--color-text-light);
+            margin-bottom: 40px;
+        }
+
+        /* カウントダウンタイマーのデザイン */
+        .countdown-area {
+            max-width: 550px;
+            margin: 0 auto 40px;
+            padding: 20px;
+            background-color: var(--color-timer-bg);
+            border-radius: 8px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .countdown-title {
+            font-family: var(--font-serif);
+            font-size: 1rem;
+            color: var(--color-accent);
+            margin-bottom: 12px;
+            letter-spacing: 0.1em;
+        }
+
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .timer-unit {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+
+        .timer-num {
+            display: inline-block;
+            font-family: var(--font-number);
+            font-size: 2rem;
+            font-size: clamp(2rem, 6vw, 3rem);
+            font-weight: 700;
+            color: var(--color-primary);
+            background-color: #fff;
+            padding: 4px 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            min-width: 1.2em;
+            text-align: center;
+            line-height: 1;
+        }
+
+        .timer-label {
+            font-family: var(--font-serif);
+            font-size: 0.9rem;
+            color: var(--color-text-light);
+            font-weight: bold;
+        }
+
+        .scroll-down-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background-color: #fff;
+            color: var(--color-text);
+            border: 1px solid #EBE8E0;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        }
+
+        /* =========================================
+           募集要項セクション
+        ========================================= */
+        #recruitment {
+            background-color: #fff;
+            padding: 80px 20px;
+            border-top: 1px solid #EBE8E0;
+            border-bottom: 1px solid #EBE8E0;
+        }
+
+        .role-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .role-card {
+            background-color: var(--color-bg);
+            padding: 32px;
+            border-radius: 8px;
+            border-top: 4px solid var(--color-primary);
+        }
+
+        .role-card h3 {
+            font-size: 1.4rem;
+            color: var(--color-primary);
+            border-bottom: 1px solid #EBE8E0;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+
+        .role-card ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .role-card li {
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--color-primary);
+            color: #fff !important;
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 20px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 89, 49, 0.3);
+            transition: all 0.3s ease;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 89, 49, 0.4);
+        }
+
+        /* =========================================
+           その他のセクション
+        ========================================= */
+        .news-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .news-item {
+            display: flex;
+            padding: 20px 0;
+            border-bottom: 1px solid #EBE8E0;
+        }
+
+        .news-date {
+            font-weight: 700;
+            color: var(--color-accent);
+            width: 140px;
+            flex-shrink: 0;
+        }
+
+        .news-text {
+            flex-grow: 1;
+        }
+
+        .content-block {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            margin-bottom: 30px;
+        }
+
+        .content-block h3 {
+            font-size: 1.4rem;
+            margin-bottom: 16px;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+
+        .schedule-table th, 
+        .schedule-table td {
+            padding: 16px;
+            border-bottom: 1px solid #EBE8E0;
+            text-align: left;
+        }
+
+        .schedule-table th {
+            width: 120px;
+            color: var(--color-accent);
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .contact-box {
+            text-align: center;
+        }
+
+        .contact-email {
+            display: inline-block;
+            margin-top: 20px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            background: #fff;
+            padding: 15px 30px;
+            border-radius: 40px;
+            border: 2px solid var(--color-primary);
+        }
+
+        /* 下部追従型ボタン */
+        .bottom-cta {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+            padding: 15px 20px;
+            box-sizing: border-box;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+        }
+
+        .bottom-cta a {
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            background-color: var(--color-primary);
+            color: #fff;
+            text-align: center;
+            padding: 14px 0;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 10px rgba(0, 89, 49, 0.2);
+        }
+
+        /* アニメーション用 */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .fade-in.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 60px 20px; }
+            .news-item { flex-direction: column; }
+            .news-date { margin-bottom: 8px; }
+            .content-block { padding: 24px; }
+            .schedule-table th, .schedule-table td { padding: 12px 8px; }
+            .schedule-table th { width: 90px; }
+            .contact-email { font-size: 1.2rem; padding: 12px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav class="nav-links">
+            <a href="#hero">トップ</a>
+            <a href="#recruitment">募集</a>
+            <a href="#history">歴史</a>
+            <a href="#schedule">予定</a>
+            <a href="#organization">組織・連絡先</a>
+        </nav>
+    </header>
+
+    <section id="hero">
+        <div class="container fade-in">
+            <h1 class="hero-catch">2028年 『なくよ (794) ウグイス平安京』が<br>大宮学区にやってくる。</h1>
+            <p class="hero-lead">20年に一度、大宮学区が担う大役。<br>継承されてきた伝統を胸に、「参加して良かった」「楽しかった」と<br>心から思える時代祭を共に創り上げましょう。</p>
+            
+            <div id="countdown" class="countdown-area">
+                <div class="countdown-title">時代祭（2028年10月22日）当日まで</div>
+                <div class="countdown-timer">
+                    <div class="timer-unit"><span id="days" class="timer-num">000</span><span class="timer-label">日</span></div>
+                    <div class="timer-unit"><span id="hours" class="timer-num">00</span><span class="timer-label">時間</span></div>
+                    <div class="timer-unit"><span id="minutes" class="timer-num">00</span><span class="timer-label">分</span></div>
+                    <div class="timer-unit"><span id="seconds" class="timer-num">00</span><span class="timer-label">秒</span></div>
+                </div>
+            </div>
+
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/0mUEP6J-320" title="時代祭動画" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            
+            <div>
+                <a href="#recruitment" class="scroll-down-btn">募集要項を見る ▼</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="recruitment">
+        <div class="container fade-in" style="padding-top: 0; padding-bottom: 0;">
+            <h2 class="section-title">参加者・ボランティア募集</h2>
+            <p style="text-align: center; margin-bottom: 40px; color: var(--color-text-light);">2028年の時代祭に向け、行列参加者と支援スタッフを募集いたします。</p>
+            
+            <div class="role-grid">
+                <div class="role-card">
+                    <h3>行列参加者</h3>
+                    <p style="font-size: 0.9rem; margin-bottom: 16px;">平安講社第一社「延暦文官参朝列」の行列に参加します。</p>
+                    <ul>
+                        <li><strong>四役（朝服）:</strong> 4名（中級役人）</li>
+                        <li><strong>舎人（闕腋）:</strong> 4名（近習・護衛）</li>
+                        <li><strong>召具（白丁）:</strong> 21名（従者）</li>
+                        <li><strong>供奉・その他:</strong> 行列整理3名、旗持2名、供奉50名迄</li>
+                    </ul>
+                </div>
+                
+                <div class="role-card">
+                    <h3>支援スタッフ（裏方）</h3>
+                    <p style="font-size: 0.9rem; margin-bottom: 16px;">祭りの円滑な進行を支える重要な役割です。</p>
+                    <ul>
+                        <li><strong>着付班・着付補助</strong></li>
+                        <li><strong>糧食班:</strong> お弁当（鳴海餅）・お茶の手配等</li>
+                        <li><strong>写真班:</strong> 早朝からの記録撮影</li>
+                        <li><strong>警備班・運搬班:</strong> 備品管理、トラック手配等</li>
+                        <li><strong>会場整理・受付班:</strong> 体育館準備、参加者受付等</li>
+                    </ul>
+                </div>
+            </div>
+
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLScKwmpM68TOX7S-qLIX_QZ1ZM9fNIc-YSipLRJUmomxeXHhcA/viewform?usp=header" target="_blank" class="btn-primary">
+                参加・ボランティアに応募する
+            </a>
+        </div>
+    </section>
+
+    <section id="news">
+        <div class="container fade-in">
+            <h2 class="section-title">新着情報</h2>
+            <div class="content-block">
+                <ul class="news-list">
+                    <li class="news-item">
+                        <div class="news-date">202X.XX.XX</div>
+                        <div class="news-text">時代祭全体説明会の日程が決定しました。詳細は追ってお知らせします。</div>
+                    </li>
+                    <li class="news-item">
+                        <div class="news-date">202X.XX.XX</div>
+                        <div class="news-text">参加者およびボランティアの募集を開始いたしました。</div>
+                    </li>
+                    <li class="news-item">
+                        <div class="news-date">202X.XX.XX</div>
+                        <div class="news-text">大宮学区 時代祭 特設サイトを公開しました。</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="history">
+        <div class="container fade-in">
+            <h2 class="section-title">大宮学区と時代祭の歴史</h2>
+            
+            <div class="content-block">
+                <h3>平安京創建時の有名人と大宮学区</h3>
+                <p>弘法大師空海は、当時御所に奉納する瓦職人の宿であった現在の神光院で9日間の修行を行いました。また、伝教大師最澄は現在の薬師山に草堂を結び、これが現在の一様院となっています。大宮学区は平安京の歴史と深く結びついている土地です。</p>
+            </div>
+
+            <div class="content-block">
+                <h3>時代祭の成り立ちと大宮学区の役割</h3>
+                <p>明治維新に伴う事実上の東京遷都により、京都は人口の3分の1が転出し衰退の危機に直面しました。これを打破するための復興計画の一環として、1895年に平安遷都1100年記念祭が行われ、時代祭が始まりました。</p>
+                <p>時代祭を実行する市民組織「平安講社」の中で、大宮学区は「第一社」に属しており、行列の先頭を飾る<strong>「延暦文官参朝列（えんりゃくぶんかんさんちょうれつ）」</strong>という極めて重要な役割を担当しています。</p>
+            </div>
+
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/0_6Xn8NnbQQ" title="延暦文官参朝列" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+    </section>
+
+    <section id="schedule">
+        <div class="container fade-in">
+            <h2 class="section-title">スケジュール（予定）</h2>
+            <p style="text-align: center; margin-bottom: 30px;">※以下は過去の事例に基づく概略であり、時間は変更となる場合があります。</p>
+            
+            <div class="content-block">
+                <h3>事前準備（9月〜10月21日）</h3>
+                <table class="schedule-table">
+                    <tr>
+                        <th>9月中旬〜下旬</th>
+                        <td>全体説明会（大宮小体育館）、衣装蔵出し（平安神宮）、着付練習</td>
+                    </tr>
+                    <tr>
+                        <th>10月中旬</th>
+                        <td>宣状授与祭（平安神宮）、着付練習、予行練習</td>
+                    </tr>
+                    <tr>
+                        <th>10月21日</th>
+                        <td>衣装蔵出し、体育館ブルーシート設営、試着・着付指導、夜間警備</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="content-block">
+                <h3>時代祭 当日（10月22日）タイムライン</h3>
+                <table class="schedule-table">
+                    <tr>
+                        <th>07:30〜</th>
+                        <td>参加者受付・着付開始（大宮小体育館）</td>
+                    </tr>
+                    <tr>
+                        <th>08:45頃</th>
+                        <td>行列行進リハーサル・記念写真撮影</td>
+                    </tr>
+                    <tr>
+                        <th>10:00頃</th>
+                        <td>大宮小学校から御所へ出発（タクシー・バス等）</td>
+                    </tr>
+                    <tr>
+                        <th>10:30頃</th>
+                        <td>行在所祭（あんざいしょさい）、昼食</td>
+                    </tr>
+                    <tr>
+                        <th>12:30頃</th>
+                        <td>行列開始・列立て、出発準備</td>
+                    </tr>
+                    <tr>
+                        <th>13:30頃</th>
+                        <td><strong>延暦文官参朝列 出発</strong></td>
+                    </tr>
+                    <tr>
+                        <th>16:30頃</th>
+                        <td>還幸祭</td>
+                    </tr>
+                    <tr>
+                        <th>17:00頃</th>
+                        <td>バスにて大宮小学校へ帰還</td>
+                    </tr>
+                    <tr>
+                        <th>17:45頃</th>
+                        <td>大宮小学校到着・着替え・解散</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="content-block">
+                <h3>事後作業（10月23日〜26日）</h3>
+                <p>衣装の片付け・箱詰め、平安神宮への返却、最終点検を実施します。</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="organization">
+        <div class="container fade-in">
+            <h2 class="section-title">実行委員会・お問い合わせ</h2>
+            
+            <div class="content-block">
+                <h3>大宮学区時代祭実行委員会</h3>
+                <p style="margin-bottom: 20px;"><strong>運営方針・透明性の確保:</strong><br>
+                大宮学区が当番学区となるには約400万円の資金が必要であり、長年にわたり町内会連合会から毎年積立を行ってきました。目的を持って積み立てた資金の適正な運用を守り、継承されてきた行事を町内会員の総意のもと、透明性をもって民主的に運営します。</p>
+                <p><strong>組織構成:</strong><br>
+                会長、副会長、事務局、会計、監査役、行列実行委員（各部門担当）により構成されています。</p>
+            </div>
+
+            <div class="content-block contact-box">
+                <h3>お問い合わせ窓口</h3>
+                <p>参加に関するご質問や、ご不明な点などがございましたら、<br>以下のメールアドレスまでお気軽にお問い合わせください。</p>
+                <a href="mailto:omiya.jidai.2028@gmail.com" class="contact-email">omiya.jidai.2028@gmail.com</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="bottom-cta">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLScKwmpM68TOX7S-qLIX_QZ1ZM9fNIc-YSipLRJUmomxeXHhcA/viewform?usp=header" target="_blank">参加・ボランティアに応募する</a>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            
+            // 1. カウントダウンタイマー機能
+            const targetDate = new Date("2028-10-22T00:00:00+09:00").getTime();
+
+            function padNum(num, len) {
+                return ('000' + num).slice(-len);
+            }
+
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const diff = targetDate - now;
+
+                const countdownArea = document.getElementById("countdown");
+
+                if (diff <= 0) {
+                    if (countdownArea) {
+                        countdownArea.innerHTML = "<div class='countdown-title' style='font-size:1.3rem; color:var(--color-primary);'>時代祭 当日です</div>";
+                    }
+                    if (typeof timerInterval !== 'undefined') clearInterval(timerInterval);
+                    return;
+                }
+
+                // 時間計算
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById("days").textContent = padNum(days, 3);
+                document.getElementById("hours").textContent = padNum(hours, 2);
+                document.getElementById("minutes").textContent = padNum(minutes, 2);
+                document.getElementById("seconds").textContent = padNum(seconds, 2);
+            }
+
+            updateCountdown();
+            const timerInterval = setInterval(updateCountdown, 1000);
+
+            // 2. フェードイン用アニメーション (Intersection Observer)
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>
