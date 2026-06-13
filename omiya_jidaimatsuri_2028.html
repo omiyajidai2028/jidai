@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大宮学区 時代祭 2028</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --red: #C0202A;
+  --red-dark: #8B0000;
+  --red-light: #E8474F;
+  --gold: #C9891A;
+  --gold-light: #E8B84B;
+  --gold-pale: #FDF4E0;
+  --white: #FFFFFF;
+  --off-white: #FAFAF8;
+  --text: #1A1A1A;
+  --text-mid: #444444;
+  --text-soft: #777777;
+  --border: #E8E0D0;
+}
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: var(--white);
+  color: var(--text);
+  font-size: 17px;
+  line-height: 1.9;
+}
+
+/* ── HEADER ── */
+header {
+  background: var(--red-dark);
+  padding: 0.6rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+}
+header .site-name {
+  font-family: 'Noto Serif JP', serif;
+  color: var(--gold-light);
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+nav { display: flex; gap: 1.5rem; }
+nav a {
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+  font-size: 0.88rem;
+  letter-spacing: 0.06em;
+  transition: color .2s;
+  white-space: nowrap;
+}
+nav a:hover { color: var(--gold-light); }
+
+/* ── HERO ── */
+#hero {
+  background: linear-gradient(160deg, var(--red-dark) 0%, #6B0000 55%, #3A0000 100%);
+  color: white;
+  text-align: center;
+  padding: 5rem 2rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+#hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 50%, var(--gold) 100%);
+}
+
+/* 紋様背景 */
+.hero-pattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='40' cy='40' r='35' fill='none' stroke='%23fff' stroke-width='1'/%3E%3Ccircle cx='40' cy='14' r='5' fill='%23fff'/%3E%3Ccircle cx='63' cy='27' r='5' fill='%23fff'/%3E%3Ccircle cx='63' cy='53' r='5' fill='%23fff'/%3E%3Ccircle cx='40' cy='66' r='5' fill='%23fff'/%3E%3Ccircle cx='17' cy='53' r='5' fill='%23fff'/%3E%3Ccircle cx='17' cy='27' r='5' fill='%23fff'/%3E%3C/svg%3E");
+  background-size: 80px 80px;
+}
+
+.hero-eyebrow {
+  display: inline-block;
+  background: rgba(201,137,26,0.25);
+  border: 1px solid rgba(232,184,75,0.6);
+  color: var(--gold-light);
+  font-size: 0.85rem;
+  letter-spacing: 0.25em;
+  padding: 0.3rem 1.2rem;
+  margin-bottom: 1.8rem;
+}
+
+.hero-title {
+  font-family: 'Noto Serif JP', serif;
+  font-size: clamp(3.5rem, 12vw, 7rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  color: #fff;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.4);
+  margin-bottom: 0.5rem;
+}
+
+.hero-subtitle {
+  font-family: 'Noto Serif JP', serif;
+  font-size: clamp(1rem, 3vw, 1.5rem);
+  color: var(--gold-light);
+  letter-spacing: 0.15em;
+  margin-bottom: 2.5rem;
+  font-weight: 400;
+}
+
+.hero-date-badge {
+  display: inline-block;
+  border: 2px solid rgba(255,255,255,0.4);
+  padding: 0.6rem 2rem;
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.9);
+  letter-spacing: 0.1em;
+  margin-bottom: 3rem;
+  font-family: 'Noto Serif JP', serif;
+}
+
+/* ── COUNTDOWN ── */
+#countdown {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.cd-unit {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(232,184,75,0.5);
+  padding: 1.2rem 1.8rem;
+  min-width: 100px;
+  text-align: center;
+}
+.cd-num {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--gold-light);
+  line-height: 1;
+  display: block;
+}
+.cd-label {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.65);
+  letter-spacing: 0.18em;
+  margin-top: 0.4rem;
+  display: block;
+}
+
+/* ── VIDEO SECTION ── */
+#video {
+  background: var(--off-white);
+  padding: 4rem 2rem;
+  border-bottom: 4px solid var(--gold);
+}
+.video-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  text-align: center;
+}
+.sec-eyebrow {
+  font-size: 0.82rem;
+  letter-spacing: 0.28em;
+  color: var(--red);
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.sec-title {
+  font-family: 'Noto Serif JP', serif;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  color: var(--text);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+  line-height: 1.3;
+}
+.gold-bar {
+  width: 56px;
+  height: 3px;
+  background: var(--gold);
+  margin: 0.8rem auto 1.8rem;
+}
+.video-frame {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  border: 3px solid var(--gold);
+}
+.video-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── FORM CTA ── */
+#join-cta {
+  background: var(--red);
+  padding: 4rem 2rem;
+  text-align: center;
+}
+#join-cta .cta-label {
+  font-size: 0.85rem;
+  letter-spacing: 0.28em;
+  color: rgba(255,255,255,0.7);
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+#join-cta h2 {
+  font-family: 'Noto Serif JP', serif;
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  color: #fff;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+}
+#join-cta p {
+  color: rgba(255,255,255,0.82);
+  font-size: 1.05rem;
+  margin-bottom: 2rem;
+  line-height: 1.8;
+}
+.cta-btn {
+  display: inline-block;
+  background: var(--gold-light);
+  color: var(--red-dark);
+  font-family: 'Noto Serif JP', serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 1rem 3rem;
+  text-decoration: none;
+  border: 3px solid var(--gold);
+  transition: background .2s, transform .15s;
+}
+.cta-btn:hover { background: #fff; transform: translateY(-2px); }
+.cta-note {
+  margin-top: 1rem;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 0.05em;
+}
+
+/* ── ABOUT ── */
+#about {
+  padding: 5rem 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+}
+.about-card {
+  background: var(--off-white);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--red);
+  padding: 1.75rem 1.5rem;
+  text-align: center;
+}
+.about-card .big-num {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: var(--red);
+  line-height: 1;
+}
+.about-card .big-unit {
+  font-size: 1rem;
+  color: var(--text-soft);
+  margin-left: 0.2rem;
+}
+.about-card .card-label {
+  font-size: 1rem;
+  color: var(--text-mid);
+  margin-top: 0.5rem;
+  letter-spacing: 0.05em;
+}
+.about-text {
+  font-size: 1.05rem;
+  color: var(--text-mid);
+  line-height: 2.1;
+  margin-bottom: 2rem;
+}
+
+/* ── ROLES ── */
+#roles {
+  background: var(--red-dark);
+  padding: 5rem 2rem;
+}
+.roles-inner { max-width: 960px; margin: 0 auto; }
+#roles .sec-title { color: #fff; }
+#roles .gold-bar { margin-left: 0; }
+#roles .sec-eyebrow { color: var(--gold-light); }
+
+.role-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+.role-card {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(232,184,75,0.3);
+  border-left: 4px solid var(--gold-light);
+  padding: 1.5rem 1.5rem;
+}
+.role-card .role-name {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 1.3rem;
+  color: var(--gold-light);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+.role-card .role-reading {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 0.6rem;
+}
+.role-card .role-count {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.9);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.role-card .role-desc {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.85;
+  margin-bottom: 0.75rem;
+}
+.role-tag {
+  display: inline-block;
+  background: rgba(201,137,26,0.25);
+  border: 1px solid rgba(232,184,75,0.5);
+  color: var(--gold-light);
+  font-size: 0.8rem;
+  padding: 0.2rem 0.7rem;
+  letter-spacing: 0.06em;
+}
+
+/* ── ROUTE ── */
+#route {
+  padding: 5rem 2rem;
+  max-width: 760px;
+  margin: 0 auto;
+}
+.route-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 2rem;
+  font-size: 1rem;
+}
+.route-table tr { border-bottom: 1px solid var(--border); }
+.route-table tr:first-child { background: var(--red); }
+.route-table tr:first-child td { color: #fff; font-weight: 700; font-size: 1.05rem; border-bottom: none; }
+.route-table tr:last-child { background: var(--gold-pale); border-bottom: none; }
+.route-table tr:last-child td { font-weight: 700; color: var(--red-dark); font-size: 1.05rem; }
+.route-table td {
+  padding: 0.85rem 1.25rem;
+  color: var(--text-mid);
+  vertical-align: middle;
+}
+.route-table td:first-child {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 1.05rem;
+  color: var(--red);
+  font-weight: 700;
+  min-width: 80px;
+}
+.route-table tr:first-child td:first-child,
+.route-table tr:last-child td:first-child { color: inherit; }
+.route-arrow { color: var(--gold); font-size: 1.1rem; }
+
+/* ── SCHEDULE ── */
+#schedule {
+  background: var(--off-white);
+  padding: 5rem 2rem;
+}
+.schedule-inner { max-width: 840px; margin: 0 auto; }
+.tl-wrap { margin-top: 2rem; }
+.tl-row {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+}
+.tl-row:first-child { border-top: 2px solid var(--red); }
+.tl-date-col {
+  min-width: 130px;
+  background: var(--red-dark);
+  color: var(--gold-light);
+  font-family: 'Noto Serif JP', serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 1rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  flex-shrink: 0;
+}
+.tl-date-col.highlight { background: var(--red); }
+.tl-content-col {
+  padding: 0.9rem 1.4rem;
+  font-size: 0.97rem;
+  color: var(--text-mid);
+  line-height: 1.9;
+  flex: 1;
+  background: var(--white);
+}
+.tl-row:nth-child(even) .tl-content-col { background: var(--off-white); }
+
+/* ── RECRUIT ── */
+#recruit {
+  padding: 5rem 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.recruit-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.recruit-card {
+  background: var(--off-white);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--red);
+  padding: 1.5rem 1rem;
+  text-align: center;
+}
+.recruit-card .rc-icon { font-size: 2.2rem; margin-bottom: 0.6rem; }
+.recruit-card .rc-name {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 1.05rem;
+  color: var(--red-dark);
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+.recruit-card .rc-count {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--red);
+  font-family: 'Noto Serif JP', serif;
+  margin-bottom: 0.3rem;
+}
+.recruit-card .rc-desc { font-size: 0.85rem; color: var(--text-soft); line-height: 1.7; }
+
+.contact-panel {
+  margin-top: 3rem;
+  background: var(--gold-pale);
+  border: 2px solid var(--gold);
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+.contact-panel h3 {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 1.3rem;
+  color: var(--red-dark);
+  margin-bottom: 1rem;
+  letter-spacing: 0.05em;
+}
+.contact-panel p { font-size: 1rem; color: var(--text-mid); line-height: 2; }
+.contact-panel a { color: var(--red); font-weight: 700; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--text);
+  color: rgba(255,255,255,0.55);
+  text-align: center;
+  padding: 3rem 2rem;
+  font-size: 0.9rem;
+  line-height: 2;
+  border-top: 4px solid var(--gold);
+}
+footer .footer-title {
+  font-family: 'Noto Serif JP', serif;
+  color: var(--gold-light);
+  font-size: 1.2rem;
+  letter-spacing: 0.15em;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 640px) {
+  header { padding: 0.6rem 1rem; }
+  nav { gap: 0.9rem; }
+  nav a { font-size: 0.78rem; }
+  .about-grid { grid-template-columns: 1fr 1fr; }
+  .cd-unit { min-width: 72px; padding: 0.9rem 1rem; }
+  .cd-num { font-size: 2.2rem; }
+  .tl-date-col { min-width: 90px; font-size: 0.82rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a href="#hero" class="site-name">大宮学区 時代祭 2028</a>
+  <nav>
+    <a href="#video">動画</a>
+    <a href="#join-cta">参加申込</a>
+    <a href="#roles">行列</a>
+    <a href="#route">巡行</a>
+    <a href="#schedule">日程</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-pattern"></div>
+  <div class="hero-eyebrow">大宮学区 ✦ 平安講社 第一社</div>
+  <h1 class="hero-title">時代祭</h1>
+  <p class="hero-subtitle">延暦文官参朝列 ― 2028年 大宮学区担当</p>
+  <div class="hero-date-badge">2028年 10月 22日（日）開催</div>
+  <div id="countdown">
+    <div class="cd-unit"><span class="cd-num" id="cd-d">—</span><span class="cd-label">日</span></div>
+    <div class="cd-unit"><span class="cd-num" id="cd-h">—</span><span class="cd-label">時間</span></div>
+    <div class="cd-unit"><span class="cd-num" id="cd-m">—</span><span class="cd-label">分</span></div>
+    <div class="cd-unit"><span class="cd-num" id="cd-s">—</span><span class="cd-label">秒</span></div>
+  </div>
+</section>
+
+<!-- VIDEO -->
+<section id="video">
+  <div class="video-inner">
+    <p class="sec-eyebrow">Archive Video</p>
+    <h2 class="sec-title">時代祭の行列をご覧ください</h2>
+    <div class="gold-bar"></div>
+    <p style="color:var(--text-soft); font-size:1rem; margin-bottom:1.75rem;">
+      大宮学区が担当する「延暦文官参朝列」の実際の行列映像です。
+    </p>
+    <div class="video-frame">
+      <iframe src="https://www.youtube.com/embed/0_6Xn8NnbQQ"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- FORM CTA -->
+<section id="join-cta">
+  <p class="cta-label">Recruitment 2028</p>
+  <h2>参加者を募集しています！</h2>
+  <p>
+    20年に一度の担当。<br>
+    行列参加・着付・撮影・運営サポートなど<br>
+    さまざまな役割でご参加いただけます。
+  </p>
+  <a class="cta-btn" href="https://docs.google.com/forms/d/e/1FAIpQLScKwmpM68TOX7S-qLIX_QZ1ZM9fNIc-YSipLRJUmomxeXHhcA/viewform?usp=header" target="_blank">
+    ▶ 参加申込フォームはこちら
+  </a>
+  <p class="cta-note">Google フォームが開きます</p>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <p class="sec-eyebrow">About</p>
+  <h2 class="sec-title">時代祭とは</h2>
+  <div class="gold-bar" style="margin-left:0;"></div>
+  <p class="about-text">
+    時代祭は、平安神宮の創建（1895年）を記念して始まった京都の祭りです。<br>
+    明治維新から平安時代まで、各時代の装束をまとった行列が<br>
+    京都御所から平安神宮まで約4.5kmを練り歩きます。<br><br>
+    2028年は20年に一度の大宮学区担当年。<br>
+    地域全体で「延暦文官参朝列」を担います。
+  </p>
+  <div class="about-grid">
+    <div class="about-card">
+      <div><span class="big-num">10/22</span></div>
+      <div class="card-label">開催日（日曜日）</div>
+    </div>
+    <div class="about-card">
+      <div><span class="big-num">20</span><span class="big-unit">年ぶり</span></div>
+      <div class="card-label">大宮学区の担当</div>
+    </div>
+    <div class="about-card">
+      <div><span class="big-num">84</span><span class="big-unit">名+</span></div>
+      <div class="card-label">参加予定人数</div>
+    </div>
+    <div class="about-card">
+      <div><span class="big-num">4.5</span><span class="big-unit">km</span></div>
+      <div class="card-label">巡行距離</div>
+    </div>
+  </div>
+</section>
+
+<!-- ROLES -->
+<section id="roles">
+  <div class="roles-inner">
+    <p class="sec-eyebrow">Procession</p>
+    <h2 class="sec-title">行列の役割</h2>
+    <div class="gold-bar"></div>
+    <p style="color:rgba(255,255,255,0.72); font-size:1rem; margin-bottom:0; max-width:640px;">
+      大宮学区は「延暦文官参朝列」を担当。以下の役割で行列を構成します。
+    </p>
+    <div class="role-grid">
+      <div class="role-card">
+        <div class="role-name">供奉</div>
+        <div class="role-reading">ぐぶ</div>
+        <div class="role-count">最大 50名</div>
+        <div class="role-desc">時代祭の供歩きをする中心的な役割。平安講社の衣装を着用。</div>
+        <span class="role-tag">裃（かみしも）</span>
+      </div>
+      <div class="role-card">
+        <div class="role-name">四役</div>
+        <div class="role-reading">しやく</div>
+        <div class="role-count">4名</div>
+        <div class="role-desc">三位〜六位の中級役人。平安神宮の神事に関わるため実行委員会が指名。乗馬あり。</div>
+        <span class="role-tag">朝服（ちょうふく）</span>
+      </div>
+      <div class="role-card">
+        <div class="role-name">舎人</div>
+        <div class="role-reading">とねり</div>
+        <div class="role-count">4名</div>
+        <div class="role-desc">皇族・貴族のお側に仕える近習。貴人の護衛等に従事した役職。</div>
+        <span class="role-tag">闕腋（けってき）</span>
+      </div>
+      <div class="role-card">
+        <div class="role-name">召具</div>
+        <div class="role-reading">めしぐ</div>
+        <div class="role-count">21名</div>
+        <div class="role-desc">貴族が外出する際、傘などを持ち随行する無位無官の従者。</div>
+        <span class="role-tag">白丁（はくちょう）</span>
+      </div>
+      <div class="role-card">
+        <div class="role-name">行列整理</div>
+        <div class="role-reading">ぎょうれつせいり</div>
+        <div class="role-count">3名</div>
+        <div class="role-desc">行列の進行を調整・整列させる役割。</div>
+        <span class="role-tag">水干（すいかん）</span>
+      </div>
+      <div class="role-card">
+        <div class="role-name">旗持</div>
+        <div class="role-reading">はたもち</div>
+        <div class="role-count">2名</div>
+        <div class="role-desc">平安講社第一社の社旗と、延暦文官参朝列の列旗を保持する。</div>
+        <span class="role-tag">法被（はっぴ）</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROUTE -->
+<section id="route">
+  <p class="sec-eyebrow">Route</p>
+  <h2 class="sec-title">当日の巡行ルート</h2>
+  <div class="gold-bar" style="margin-left:0;"></div>
+  <p style="color:var(--text-soft); font-size:1rem;">
+    正午に京都御所を出発し、約2時間かけて平安神宮まで巡行します。
+  </p>
+  <table class="route-table">
+    <tr>
+      <td>12:00</td>
+      <td><span class="route-arrow">▶</span>&ensp;京都御所 建礼門前 出発</td>
+    </tr>
+    <tr>
+      <td>12:15</td>
+      <td><span class="route-arrow">▶</span>&ensp;堺町御門</td>
+    </tr>
+    <tr>
+      <td>12:30</td>
+      <td><span class="route-arrow">▶</span>&ensp;烏丸丸太町</td>
+    </tr>
+    <tr>
+      <td>12:50</td>
+      <td><span class="route-arrow">▶</span>&ensp;烏丸御池</td>
+    </tr>
+    <tr>
+      <td>13:20</td>
+      <td><span class="route-arrow">▶</span>&ensp;河原町御池</td>
+    </tr>
+    <tr>
+      <td>13:30</td>
+      <td><span class="route-arrow">▶</span>&ensp;河原町三条</td>
+    </tr>
+    <tr>
+      <td>13:40</td>
+      <td><span class="route-arrow">▶</span>&ensp;三条大橋</td>
+    </tr>
+    <tr>
+      <td>14:10</td>
+      <td><span class="route-arrow">▶</span>&ensp;三条神宮道</td>
+    </tr>
+    <tr>
+      <td>14:30</td>
+      <td>🏯&ensp;平安神宮 到着・還幸祭</td>
+    </tr>
+  </table>
+</section>
+
+<!-- SCHEDULE -->
+<section id="schedule">
+  <div class="schedule-inner">
+    <p class="sec-eyebrow">Schedule</p>
+    <h2 class="sec-title">準備スケジュール</h2>
+    <div class="gold-bar" style="margin-left:0;"></div>
+    <div class="tl-wrap">
+      <div class="tl-row">
+        <div class="tl-date-col">9月14日頃</div>
+        <div class="tl-content-col">全体説明会（体育館）・おしめ配布</div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-date-col">9月15日頃</div>
+        <div class="tl-content-col">蔵出し・平安神宮へ（裃・着物を会館へ運搬）</div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-date-col">9月26日頃</div>
+        <div class="tl-content-col">裃着付け練習</div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-date-col">10月15日</div>
+        <div class="tl-content-col">平安神宮 宣状授与祭（13:30〜）スーツ着用・計11名参加</div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-date-col">10月17日頃</div>
+        <div class="tl-content-col">裃着付け練習（最終）</div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-date-col">10月20日</div>
+        <div class="tl-content-col">予行練習（15:00〜）・参加者全員 最終打ち合わせ（19:00〜）</div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-date-col">10月21日</div>
+        <div class="tl-content-col">衣装蔵出し・体育館準備・四役試着指導（13:00〜）・警備開始（17:00〜）</div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-date-col highlight">10月22日 🎌</div>
+        <div class="tl-content-col" style="font-weight:700; color:var(--red-dark); background:var(--gold-pale);">
+          本番当日 ｜ 集合7:00 → 着付7:30 → 御所出発9:30 → 行列12:00〜 → 平安神宮到着14:30 → 還幸祭
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-date-col">10月23日</div>
+        <div class="tl-content-col">衣装倉入れ・西陣運輸様が平安神宮へ返却</div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-date-col">10月26日</div>
+        <div class="tl-content-col">平安神宮へ全て返却（草履なども）</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RECRUIT DETAIL -->
+<section id="recruit">
+  <p class="sec-eyebrow">Recruit</p>
+  <h2 class="sec-title">スタッフ募集</h2>
+  <div class="gold-bar" style="margin-left:0;"></div>
+  <p style="color:var(--text-soft); font-size:1rem; margin-bottom:0;">
+    行列参加だけでなく、当日を支えるさまざまなスタッフも大募集！
+  </p>
+  <div class="recruit-cards">
+    <div class="recruit-card">
+      <div class="rc-icon">👘</div>
+      <div class="rc-name">行列参加</div>
+      <div class="rc-count">50<span style="font-size:1rem; font-weight:400; color:var(--text-soft);">名+</span></div>
+      <div class="rc-desc">供奉・四役・舎人・召具など</div>
+    </div>
+    <div class="recruit-card">
+      <div class="rc-icon">🎀</div>
+      <div class="rc-name">着付班</div>
+      <div class="rc-count">20〜30<span style="font-size:1rem; font-weight:400; color:var(--text-soft);">名</span></div>
+      <div class="rc-desc">十二単着付け経験者歓迎</div>
+    </div>
+    <div class="recruit-card">
+      <div class="rc-icon">🍱</div>
+      <div class="rc-name">糧食班</div>
+      <div class="rc-count">3<span style="font-size:1rem; font-weight:400; color:var(--text-soft);">名</span></div>
+      <div class="rc-desc">お弁当手配・配食</div>
+    </div>
+    <div class="recruit-card">
+      <div class="rc-icon">📷</div>
+      <div class="rc-name">撮影班</div>
+      <div class="rc-count">3〜5<span style="font-size:1rem; font-weight:400; color:var(--text-soft);">名</span></div>
+      <div class="rc-desc">デジカメ持参・終日撮影</div>
+    </div>
+    <div class="recruit-card">
+      <div class="rc-icon">🔒</div>
+      <div class="rc-name">警備班</div>
+      <div class="rc-count">10<span style="font-size:1rem; font-weight:400; color:var(--text-soft);">名</span></div>
+      <div class="rc-desc">荷物管理・交代制</div>
+    </div>
+    <div class="recruit-card">
+      <div class="rc-icon">🚚</div>
+      <div class="rc-name">運搬班</div>
+      <div class="rc-count">各3<span style="font-size:1rem; font-weight:400; color:var(--text-soft);">名</span></div>
+      <div class="rc-desc">衣装・持具の往復運搬</div>
+    </div>
+    <div class="recruit-card">
+      <div class="rc-icon">🏫</div>
+      <div class="rc-name">設営班</div>
+      <div class="rc-count">6<span style="font-size:1rem; font-weight:400; color:var(--text-soft);">名</span></div>
+      <div class="rc-desc">体育館設営・椅子の準備</div>
+    </div>
+    <div class="recruit-card">
+      <div class="rc-icon">📋</div>
+      <div class="rc-name">受付班</div>
+      <div class="rc-count">数名</div>
+      <div class="rc-desc">参加者受付・当日誘導</div>
+    </div>
+  </div>
+
+  <div class="contact-panel">
+    <h3>お問い合わせ・ご連絡</h3>
+    <p>
+      メール：<a href="mailto:oomiyagakku@gmail.com">oomiyagakku@gmail.com</a><br>
+      意見交換：<a href="https://www.c-sqr.net/c/cs121454" target="_blank">グループウェアはこちら</a>
+    </p>
+    <div style="margin-top:1.5rem;">
+      <a class="cta-btn" style="background:var(--red); color:white; border-color:var(--red-dark);" href="https://docs.google.com/forms/d/e/1FAIpQLScKwmpM68TOX7S-qLIX_QZ1ZM9fNIc-YSipLRJUmomxeXHhcA/viewform?usp=header" target="_blank">
+        ▶ 参加申込フォーム
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-title">大宮学区 時代祭 2028</span>
+  大宮学区時代祭実行委員会 ／ 平安講社 第一社<br>
+  延暦文官参朝列担当<br>
+  <span style="display:block; margin-top:1rem; font-size:0.82rem;">大宮学区の絆の力で 2028 時代祭を盛り上げましょう</span>
+</footer>
+
+<script>
+const target = new Date('2028-10-22T12:00:00+09:00');
+function tick() {
+  const diff = target - new Date();
+  if (diff <= 0) {
+    ['cd-d','cd-h','cd-m','cd-s'].forEach(id => document.getElementById(id).textContent = '0');
+    return;
+  }
+  document.getElementById('cd-d').textContent = Math.floor(diff / 86400000);
+  document.getElementById('cd-h').textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2,'0');
+  document.getElementById('cd-m').textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2,'0');
+  document.getElementById('cd-s').textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2,'0');
+}
+tick();
+setInterval(tick, 1000);
+</script>
+</body>
+</html>
