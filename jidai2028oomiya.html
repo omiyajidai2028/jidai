@@ -638,9 +638,19 @@
             .countdown-area {
                 padding: 20px 10px;
             }
+            .countdown-timer {
+                gap: 6px; /* 要素同士の間隔を12pxから縮小 */
+            }
+            .timer-unit {
+                gap: 2px; /* 数字と単位の間隔を4pxから縮小 */
+            }
             .timer-num {
-                padding: 6px 10px;
-                font-size: 2rem;
+                padding: 4px 6px; /* 数字周りの余白を縮小 */
+                font-size: clamp(1.2rem, 5vw, 1.8rem); /* 画面幅に応じて文字サイズを可変にする */
+                min-width: 1em; /* 最小幅を調整 */
+            }
+            .timer-label {
+                font-size: 0.8rem; /* ラベル文字も少し縮小 */
             }
 
         }
