@@ -276,10 +276,15 @@
 
         .countdown-title {
             font-family: var(--font-serif);
-            font-size: 1.1rem;
-            color: #F9F8F6; /* ダーク背景に映える白系 */
+            font-size: 1.25rem;
+            font-weight: 700; /* 900から700へ落とし、少し落ち着かせる */
+            text-align: center;
             margin-bottom: 20px;
             letter-spacing: 0.15em;
+            color: #ffffff; /* 発光をやめ、純白にする */
+            
+            /* 黒背景に対して文字をくっきりと浮かび上がらせるための影 */
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
         }
 
         .countdown-timer {
@@ -313,9 +318,28 @@
 
         .timer-label {
             font-family: var(--font-serif);
-            font-size: 0.95rem;
-            color: var(--color-accent);
-            font-weight: bold;
+            font-size: 1.35rem; /* さらにもう一段階大きくして主張を最大化 */
+            font-weight: 900;
+            
+            /* 金と銀を交差させた重厚なメタリックグラデーション */
+            background: linear-gradient(
+                to bottom,
+                #FFF7D6 0%,     /* 上部：光を受ける明るい金 */
+                #D4AF37 25%,    /* 上半分：雅な黄金色 */
+                #E2E5EA 48%,    /* 中央上：鋭利な銀のハイライト */
+                #7A8394 52%,    /* 中央下：銀特有の深い影 */
+                #B8860B 75%,    /* 下半分：渋みのあるアンティークゴールド */
+                #FCEEAA 100%    /* 下端：照り返しの金 */
+            );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: #D4AF37; /* グラデーション非対応ブラウザの予備 */
+
+            /* 金色の淡い後光と、文字を黒背景から力強く浮かび上がらせる濃い影 */
+            filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.4)) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.95));
+            
+            letter-spacing: 0.05em;
         }
 
         /* =========================================
@@ -638,6 +662,10 @@
             .countdown-area {
                 padding: 20px 10px;
             }
+            .countdown-title {
+                font-size: 1.05rem;
+                margin-bottom: 15px;
+            }
             .countdown-timer {
                 gap: 6px; /* 要素同士の間隔を12pxから縮小 */
             }
@@ -650,7 +678,7 @@
                 min-width: 1em; /* 最小幅を調整 */
             }
             .timer-label {
-                font-size: 0.8rem; /* ラベル文字も少し縮小 */
+                font-size: 1.05rem; /* スマホ表示でも存在感を損なわないサイズ */
             }
 
         }
