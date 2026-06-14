@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>大宮学区 時代祭実行委員会 事務局 — 運営ポータル</title>
+<style>
+  /* ===========================================================
+     設計トークン
+     ・現場でスマホ片手操作を前提とした実務直結UI
+     ・装飾は最小限。色は「機能」と「連携先」を伝えるためだけに使う
+     ・ブランド色は延暦文官参朝列の先頭・三位の浅紫（むらさき）に由来
+  =========================================================== */
+  :root{
+    --paper:#F1EEE6;        /* 和紙のような温かい地色 */
+    --surface:#FFFFFF;
+    --surface-2:#FBFAF6;
+    --ink:#26241F;          /* 墨に近い文字色 */
+    --ink-2:#56534B;
+    --ink-3:#86827A;
+    --line:#E2DED3;
+    --line-2:#D3CEC1;
+    --murasaki:#6B4FA8;     /* ブランド／ハブ強調 */
+    --murasaki-bg:#ECE7F6;
+    --warn:#B5491F;         /* ボトルネック警告 */
+    --warn-bg:#FBEBDF;
+    --radius:13px;
+    --radius-sm:9px;
+    --shadow:0 1px 2px rgba(38,36,31,.05),0 6px 16px rgba(38,36,31,.05);
+    --tap:44px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{ -webkit-text-size-adjust:100%; }
+
+  body{
+    font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Meiryo",sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.7;
+    font-size:15px;
+    max-width:820px;
+    margin:0 auto;
+    padding:0 0 64px;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* ============ マストヘッド ============ */
+  .masthead{
+    padding:22px 18px 16px;
+    border-top:4px solid var(--murasaki);
+  }
+  .kicker{
+    font-size:11.5px;
+    letter-spacing:.14em;
+    color:var(--murasaki);
+    font-weight:700;
+    margin-bottom:7px;
+  }
+  .masthead h1{
+    font-size:21px;
+    font-weight:700;
+    letter-spacing:.01em;
+    line-height:1.35;
+  }
+  .masthead .sub{
+    font-size:12.5px;
+    color:var(--ink-2);
+    margin-top:5px;
+  }
+  .meta-strip{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-top:11px;
+  }
+  .meta-pill{
+    font-size:11px;
+    color:var(--ink-2);
+    background:var(--surface);
+    border:1px solid var(--line-2);
+    border-radius:20px;
+    padding:3px 10px;
+  }
+  .meta-pill b{font-weight:700;color:var(--ink)}
+
+  /* ============ Sticky フィルター ============ */
+  .filters{
+    position:sticky;
+    top:0;
+    z-index:40;
+    background:rgba(241,238,230,.93);
+    backdrop-filter:saturate(140%) blur(8px);
+    -webkit-backdrop-filter:saturate(140%) blur(8px);
+    border-bottom:1px solid var(--line-2);
+    padding:10px 0 8px;
+  }
+  .filter-block{padding:0 12px}
+  .filter-block + .filter-block{margin-top:8px}
+  .filter-label{
+    font-size:10.5px;
+    font-weight:700;
+    letter-spacing:.08em;
+    color:var(--ink-3);
+    padding:0 6px 5px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .filter-label .fl-tag{
+    width:6px;height:6px;border-radius:50%;background:var(--ink-3);
+  }
+  .chip-rail{
+    display:flex;
+    flex-wrap:wrap;        /* 横スクロールを廃止：全チップを常に画面内へ折り返して表示 */
+    gap:7px;
+    padding:2px 6px 6px;
+  }
+
+  .chip{
+    flex:0 0 auto;
+    min-height:36px;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:600;
+    color:var(--ink-2);
+    background:var(--surface);
+    border:1.5px solid var(--line-2);
+    border-radius:20px;
+    padding:0 12px;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:transform .12s ease, border-color .12s ease, background .12s ease;
+  }
+  .chip .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+  .chip:active{transform:scale(.96)}
+  .chip[aria-pressed="true"]{color:#fff;border-color:transparent}
+  /* 班チップの活性色はJSが班カラーで上書き。フェーズは墨色で活性 */
+  .phase-chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink)}
+  /* フェーズチップは「名称＋日付」の2段。短い名称で1行に収め、期間も常時表示 */
+  .phase-chip{flex-direction:column;align-items:flex-start;gap:1px;padding:5px 13px;line-height:1.15}
+  .phase-chip .ph-name{font-size:13px;font-weight:700}
+  .phase-chip .ph-date{font-size:10px;font-weight:600;color:var(--ink-3);letter-spacing:.01em}
+  .phase-chip[aria-pressed="true"] .ph-name,
+  .phase-chip[aria-pressed="true"] .ph-date{color:#fff}
+  .team-chip[aria-pressed="true"] .dot{background:#fff !important}
+
+  /* ============ 共通セクション ============ */
+  .wrap{padding:0 14px}
+  .section-title{
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.06em;
+    color:var(--ink-3);
+    margin:26px 6px 11px;
+    display:flex;
+    align-items:center;
+    gap:9px;
+  }
+  .section-title::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  /* ============ 階層 俯瞰マップ ============ */
+  .orgmap{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:14px 13px 16px;
+    box-shadow:var(--shadow);
+    margin-top:18px;
+  }
+  .orgmap-hint{
+    font-size:11.5px;
+    color:var(--ink-3);
+    margin:0 2px 12px;
+  }
+  .tier{position:relative}
+  .tier-head{
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+    margin-bottom:8px;
+  }
+  .tier-rank{
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.06em;
+    color:#fff;
+    background:var(--ink-3);
+    border-radius:5px;
+    padding:2px 7px;
+  }
+  .tier-name{font-size:12.5px;font-weight:700;color:var(--ink)}
+  .tier-1 .tier-rank{background:#8C7BB8}
+  .tier-2 .tier-rank{background:var(--murasaki)}
+  .tier-3 .tier-rank{background:#9C8E78}
+
+  .node-row{display:flex;flex-wrap:wrap;gap:7px}
+  .node{
+    border:1.5px solid var(--line-2);
+    background:var(--surface-2);
+    border-radius:var(--radius-sm);
+    padding:8px 11px;
+    font-size:12.5px;
+    line-height:1.45;
+    color:var(--ink);
+  }
+  .node .node-name{font-weight:700;display:block}
+  .node .node-desc{font-size:10.5px;color:var(--ink-3);margin-top:2px}
+  .node.flex1{flex:1 1 140px}
+
+  /* 中核タイル（11班）= タップで班選択 */
+  .core-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(78px,1fr));
+    gap:7px;
+  }
+  .core-tile{
+    font-family:inherit;
+    cursor:pointer;
+    border:1.5px solid var(--line-2);
+    background:var(--surface-2);
+    border-radius:var(--radius-sm);
+    padding:9px 4px 8px;
+    text-align:center;
+    transition:transform .1s ease, box-shadow .12s ease;
+    position:relative;
+  }
+  .core-tile:active{transform:scale(.95)}
+  .core-tile .ct-no{
+    font-size:9.5px;color:var(--ink-3);font-weight:700;display:block;
+  }
+  .core-tile .ct-name{font-size:12.5px;font-weight:700;color:var(--ink);display:block;margin-top:1px}
+  .core-tile .ct-bar{height:3px;border-radius:3px;margin:6px 6px 0}
+  .core-tile.is-self{
+    box-shadow:0 0 0 2px #fff, 0 0 0 4px currentColor;
+    background:#fff;
+  }
+  .core-tile.dim{opacity:.4}
+  .self-flag{
+    position:absolute;top:-8px;left:50%;transform:translateX(-50%);
+    font-size:9px;font-weight:700;color:#fff;border-radius:20px;
+    padding:1px 8px;white-space:nowrap;
+  }
+
+  /* tier 間のコネクタ */
+  .connector{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:14px;
+    padding:9px 0;
+    font-size:10px;
+    color:var(--ink-3);
+    font-weight:600;
+  }
+  .connector .ln{width:1.5px;height:14px;background:var(--line-2);position:relative}
+  .connector .lbl-up::before{content:"▲ ";color:#A99}
+  .connector .lbl-dn::before{content:"▼ ";color:#A99}
+
+  .node.lit{
+    border-color:currentColor;
+    background:#fff;
+    box-shadow:0 0 0 2px color-mix(in srgb, currentColor 14%, transparent);
+  }
+
+  /* ============ 選択ガイド / ステータス ============ */
+  .pickprompt{
+    background:var(--murasaki-bg);
+    border:1px solid color-mix(in srgb,var(--murasaki) 30%,transparent);
+    border-radius:var(--radius);
+    padding:13px 15px;
+    font-size:13px;
+    color:#4A3680;
+    margin-top:16px;
+    line-height:1.65;
+  }
+  .pickprompt b{font-weight:700}
+
+  .status-line{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:18px;
+    padding:0 4px;
+  }
+  .status-line .now{font-size:12px;color:var(--ink-3)}
+  .status-line .now b{color:var(--ink);font-weight:700}
+  .status-line .count{
+    margin-left:auto;
+    font-size:11px;
+    color:var(--ink-3);
+  }
+  .reset-btn{
+    font-family:inherit;font-size:11px;color:var(--ink-2);
+    background:none;border:none;cursor:pointer;text-decoration:underline;
+    padding:4px;
+  }
+
+  /* ============ 自分の班 サマリー ============ */
+  .summary{
+    border:1px solid var(--line);
+    border-left:5px solid var(--line);
+    background:var(--surface);
+    border-radius:var(--radius);
+    padding:15px 16px 16px;
+    box-shadow:var(--shadow);
+    margin-top:12px;
+  }
+  .summary-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .summary-no{
+    font-size:11px;font-weight:700;color:#fff;border-radius:6px;
+    padding:3px 9px;flex-shrink:0;
+  }
+  .summary-name{font-size:18px;font-weight:700}
+  .summary-role{font-size:11.5px;color:var(--ink-3);margin-left:auto;text-align:right}
+  .summary-tag{font-size:13px;color:var(--ink-2);line-height:1.65}
+  .summary-links{margin-top:13px}
+  .sl-label{
+    font-size:10.5px;font-weight:700;letter-spacing:.05em;color:var(--ink-3);
+    margin-bottom:7px;
+  }
+  .badge-wrap{display:flex;flex-wrap:wrap;gap:6px}
+
+  /* 連携バッジ（班）= 連絡相手。色で識別 */
+  .badge{
+    font-size:12px;font-weight:600;border-radius:7px;
+    padding:4px 10px;display:inline-flex;align-items:center;gap:6px;
+    line-height:1.3;
+  }
+  .badge .bd{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+  /* 業者バッジ = アウトライン＋角型印 */
+  .badge-ext{
+    background:var(--surface-2);
+    border:1px solid var(--line-2);
+    color:var(--ink-2);
+    font-size:11.5px;
+    font-weight:600;
+    border-radius:7px;
+    padding:4px 10px;
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .badge-ext::before{
+    content:"業";font-size:8.5px;font-weight:700;color:#fff;
+    background:#9C8E78;border-radius:3px;width:14px;height:14px;
+    display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .badge-town{
+    background:#EEF4E6;border:1px solid #CADDB2;color:#4C6B2E;
+    font-size:11.5px;font-weight:600;border-radius:7px;padding:4px 10px;
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .badge-town::before{
+    content:"地域";font-size:8.5px;font-weight:700;color:#fff;
+    background:#7BA04A;border-radius:3px;padding:0 4px;height:14px;
+    display:inline-flex;align-items:center;flex-shrink:0;
+  }
+
+  /* ============ タスクカード ============ */
+  .tasklist{margin-top:13px;display:flex;flex-direction:column;gap:11px}
+  .task{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+    box-shadow:var(--shadow);
+    animation:rise .26s ease both;
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .task-head{
+    display:flex;align-items:center;gap:9px;
+    padding:10px 13px;
+    border-bottom:1px solid var(--line);
+    background:var(--surface-2);
+  }
+  .task-time{
+    font-size:13px;font-weight:700;color:#fff;
+    border-radius:7px;padding:4px 10px;flex-shrink:0;
+    letter-spacing:.01em;
+  }
+  .task-phase{
+    font-size:10.5px;font-weight:700;color:var(--ink-2);
+    background:#fff;border:1px solid var(--line-2);border-radius:20px;
+    padding:2px 9px;margin-left:auto;flex-shrink:0;
+  }
+  .task-body{padding:11px 14px 13px}
+  .task-what{font-size:14px;color:var(--ink);line-height:1.62}
+  .task-note{
+    margin-top:8px;font-size:11.5px;font-weight:700;color:var(--warn);
+    background:var(--warn-bg);border-radius:7px;padding:5px 9px;
+    display:inline-block;
+  }
+  .task-link-label{
+    font-size:10px;font-weight:700;letter-spacing:.05em;color:var(--ink-3);
+    margin:11px 0 6px;
+  }
+
+  .chain-flag{
+    display:inline-flex;align-items:center;gap:5px;
+    font-size:10px;font-weight:700;color:var(--warn);
+    background:var(--warn-bg);border-radius:20px;padding:2px 9px;
+    margin-left:8px;flex-shrink:0;
+  }
+  .chain-flag::before{content:"連鎖";font-size:8px;background:var(--warn);color:#fff;border-radius:3px;padding:0 3px}
+
+  .empty{
+    text-align:center;color:var(--ink-3);font-size:13px;
+    background:var(--surface);border:1px dashed var(--line-2);
+    border-radius:var(--radius);padding:26px 18px;margin-top:13px;line-height:1.7;
+  }
+
+  /* ============ 重要連携の連鎖（ボトルネック）============ */
+  .chains{margin-top:8px;display:flex;flex-direction:column;gap:12px}
+  .chain{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+    box-shadow:var(--shadow);
+  }
+  .chain.hot{border-color:color-mix(in srgb,var(--warn) 40%,transparent)}
+  .chain-head{
+    padding:11px 14px;
+    border-bottom:1px solid var(--line);
+    display:flex;align-items:center;gap:8px;
+  }
+  .chain-time{
+    font-size:11px;font-weight:700;color:#fff;background:var(--warn);
+    border-radius:6px;padding:3px 9px;flex-shrink:0;
+  }
+  .chain-title{font-size:13.5px;font-weight:700}
+  .chain-steps{padding:12px 14px 6px;display:flex;flex-direction:column;gap:0}
+  .cstep{
+    display:flex;gap:11px;position:relative;padding-bottom:13px;
+  }
+  .cstep:last-child{padding-bottom:6px}
+  .cstep .cnum{
+    width:23px;height:23px;border-radius:50%;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    font-size:11px;font-weight:700;color:#fff;z-index:2;
+  }
+  .cstep::before{
+    content:"";position:absolute;left:11px;top:23px;bottom:-1px;
+    width:1.5px;background:var(--line-2);
+  }
+  .cstep:last-child::before{display:none}
+  .cstep .ctxt{font-size:12.5px;padding-top:2px}
+  .cstep .ctxt b{font-weight:700}
+  .cstep.self .ctxt{font-weight:700}
+  .cstep.self{
+    background:color-mix(in srgb,currentColor 8%,transparent);
+    border-radius:8px;margin:0 -6px;padding:4px 6px 13px;
+  }
+  .chain-warn{
+    font-size:11.5px;color:var(--warn);font-weight:600;line-height:1.6;
+    background:var(--warn-bg);margin:4px 14px 14px;border-radius:8px;padding:8px 11px;
+  }
+
+  .footer{
+    margin-top:34px;padding:0 18px;
+    font-size:10.5px;color:var(--ink-3);text-align:center;line-height:1.7;
+  }
+
+  /* ============ レスポンシブ ============ */
+  @media(min-width:560px){
+    body{font-size:15.5px}
+    .masthead h1{font-size:24px}
+    .core-grid{grid-template-columns:repeat(auto-fill,minmax(96px,1fr))}
+  }
+
+  /* フォーカス可視化 */
+  .chip:focus-visible,.core-tile:focus-visible,.reset-btn:focus-visible{
+    outline:3px solid var(--murasaki);outline-offset:2px;
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none !important;transition:none !important}
+  }
+</style>
+</head>
+<body>
+
+  <header class="masthead">
+    <div class="kicker">大宮学区 ／ 令和10年 時代祭</div>
+    <h1>大宮学区 時代祭実行委員会 事務局</h1>
+    <div class="sub">延暦文官参朝列（えんりゃくぶんかんさんちょうれつ）11班 運営ポータル</div>
+    <div class="meta-strip">
+      <span class="meta-pill">開催 <b>2028/10/22(日)</b></span>
+      <span class="meta-pill">雨天 <b>翌月曜に順延</b></span>
+      <span class="meta-pill">奉仕 <b>第一社・延暦時代</b></span>
+      <span class="meta-pill">目標 <b>参加200名</b></span>
+    </div>
+  </header>
+
+  <!-- Sticky 2段フィルター -->
+  <div class="filters">
+    <div class="filter-block">
+      <div class="filter-label"><span class="fl-tag"></span>あなたの班を選ぶ</div>
+      <div class="chip-rail" id="team-rail" role="group" aria-label="班の選択"></div>
+    </div>
+    <div class="filter-block">
+      <div class="filter-label"><span class="fl-tag"></span>フェーズで絞り込む</div>
+      <div class="chip-rail" id="phase-rail" role="group" aria-label="フェーズの選択"></div>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <!-- 階層 俯瞰マップ -->
+    <div class="section-title" id="orgmap-head">組織の俯瞰 ― あなたは「中核（ハブ）」</div>
+    <div class="orgmap" id="orgmap">
+      <p class="orgmap-hint" id="orgmap-hint">自分の班を選ぶと、上位の意思決定層と下位の実行基盤の間で、あなたが誰と連携するハブかが浮かび上がります。</p>
+
+      <div class="tier tier-1">
+        <div class="tier-head"><span class="tier-rank">上位</span><span class="tier-name">意思決定・支援</span></div>
+        <div class="node-row" id="tier-up"></div>
+      </div>
+
+      <div class="connector"><span class="lbl-up">報告・上申</span><span class="ln"></span><span class="lbl-dn">判断・支援</span></div>
+
+      <div class="tier tier-2">
+        <div class="tier-head"><span class="tier-rank">中核</span><span class="tier-name">調整・執行 ― 事務局 11班</span></div>
+        <div class="core-grid" id="core-grid"></div>
+      </div>
+
+      <div class="connector"><span class="lbl-up">作業報告</span><span class="ln"></span><span class="lbl-dn">指揮・要請</span></div>
+
+      <div class="tier tier-3">
+        <div class="tier-head"><span class="tier-rank">基盤</span><span class="tier-name">実行基盤・パートナー</span></div>
+        <div class="node-row" id="tier-base"></div>
+      </div>
+    </div>
+
+    <!-- 選択ガイド or サマリー -->
+    <div id="pickprompt" class="pickprompt">
+      <b>使い方：</b>画面上部の「あなたの班」から自分の班を選ぶと、その班の<b>タスク</b>と<b>連絡・相談先</b>だけが下に表示されます。フェーズ（準備期／前日／当日／後片付け）を重ねると、いま動くべきことだけに絞れます。
+    </div>
+
+    <div class="status-line" id="status-line" hidden>
+      <span class="now" id="status-now"></span>
+      <button class="reset-btn" id="reset-btn" type="button">選択をリセット</button>
+      <span class="count" id="status-count"></span>
+    </div>
+
+    <div id="summary-mount"></div>
+    <div id="task-mount"></div>
+
+    <!-- 重要連携の連鎖 -->
+    <div class="section-title">全体で守る「連携の連鎖」</div>
+    <div class="chains" id="chains-mount"></div>
+
+  </div>
+
+  <footer class="footer">
+    大宮学区時代祭実行委員会 事務局 ／ 令和10年（2028）時代祭・延暦文官参朝列<br>
+    出典：全体マニュアル・11班運営連携マニュアル（事務局資料）
+  </footer>
+
+<script>
+/* ============================================================
+   データ（PDF実データから抽出）
+   ============================================================ */
+
+// 11班マスタ（順序＝マニュアル準拠）
+const TEAMS = [
+  { key:'toukatsu', no:1, name:'統括班', color:'#6B4FA8',
+    role:'全体の司令塔',
+    tag:'全班の進捗を集約し、執行部・平安講社と連絡調整。当日は本部（大宮小学校）に常駐し、最終判断とトラブル対応を担う。',
+    links:['shinkou','keibi','setsuei','jinji','ishou','unyu'],
+    ext:['平安講社','役員会'] },
+  { key:'jinji', no:2, name:'人事班', color:'#2C8C6A',
+    role:'名簿・配役',
+    tag:'行列完歩できる人員の配置・配役調整と名簿の厳重管理。朝服4名等は神事に関わるため実行委員会が厳選する。',
+    links:['shinkou','seiri','ishou','kitsuke'],
+    ext:[], towns:true },
+  { key:'shinkou', no:3, name:'進行班', color:'#2E6FB0',
+    role:'時間・配車',
+    tag:'公式スケジュールに基づく配車と行列進行の時間管理。バス・タクシーの運行統括と御苑での出発・着陣の判断。',
+    links:['toukatsu','seiri','keibi'],
+    ext:['ヤサカ観光','タクシー'] },
+  { key:'seiri', no:4, name:'整理班', color:'#0E8C8E',
+    role:'受付・誘導',
+    tag:'拠点受付の差配、手荷物管理、校庭での整列誘導。参加者の流れを着付・写真・出発までスムーズにつなぐ。',
+    links:['jinji','setsuei','kitsuke'],
+    ext:[], towns:true },
+  { key:'keibi', no:5, name:'警備班', color:'#C2542F',
+    role:'安全・夜間警備',
+    tag:'前日夜間警備の総括と当日の沿道・拠点の安全確保。太平警備の指揮と、車両出入り時の交通誘導を担う。',
+    links:['toukatsu','shinkou','setsuei'],
+    ext:['太平警備'] },
+  { key:'unyu', no:6, name:'運輸班', color:'#9C6B34',
+    role:'搬入・搬出',
+    tag:'衣装・持具の拠点間（学校〜御所〜神宮）運搬ダイヤ管理と積下人員の指揮。蔵出し・蔵入れの主担当。',
+    links:['ishou','setsuei','jinji'],
+    ext:['西陣運輸'] },
+  { key:'ishou', no:7, name:'衣装班', color:'#855029',
+    role:'蔵出し・収納',
+    tag:'供奉衣装・持具の事前点検、当日の受け渡し、帰着後の仕分け・陰干し・収納。高田衣装との窓口・返却窓口。',
+    links:['unyu','kitsuke','setsuei'],
+    ext:['高田衣装'] },
+  { key:'kitsuke', no:8, name:'着付班', color:'#B5803F',
+    role:'着付・教室',
+    tag:'事前着付け教室の運営と当日の着付進捗管理。ボランティアの差配と、出発時刻への厳守進行。',
+    links:['ishou','seiri','jinji','shashin'],
+    ext:['高田衣装'] },
+  { key:'shashin', no:9, name:'写真・広報班', color:'#8A7320',
+    role:'記録・広報',
+    tag:'個別・全体集合写真の撮影差配と納品。のぼり・ポスター・HP等の広報物制作のディレクションも担う。',
+    links:['seiri','kitsuke','shinkou','setsuei','toukatsu'],
+    ext:['指定写真業者'] },
+  { key:'ryoushoku', no:10, name:'糧食班', color:'#6A9A2E',
+    role:'弁当・配食',
+    tag:'鳴海餅本店への発注管理と、御苑での確実な分配。大宮専用の別紐・緑毛氈で他学区との取り違えを防ぐ。',
+    links:['jinji','setsuei','keibi'],
+    ext:['鳴海餅本店'] },
+  { key:'setsuei', no:11, name:'設営班', color:'#515FA0',
+    role:'会場・受付構築',
+    tag:'体育館・会議室の会場構築と受付システムの管理。各班のエリアを示す会場図を作成し全班へ共有する。',
+    links:['seiri','ishou','ryoushoku'],
+    ext:['機材レンタル業者'] },
+];
+const TEAM = Object.fromEntries(TEAMS.map(t=>[t.key,t]));
+
+// フェーズ
+const PHASES = [
+  { key:'all',   label:'全期間',                 short:'全期間',   date:'通期' },
+  { key:'prep',  label:'準備期（9月〜10月上旬）', short:'準備期',   date:'9〜10月上旬' },
+  { key:'eve',   label:'前日（10/21）',           short:'前日',     date:'10/21' },
+  { key:'day',   label:'当日（10/22）',           short:'当日',     date:'10/22' },
+  { key:'after', label:'後片付け（10/23〜）',     short:'後片付け', date:'10/23〜' },
+];
+const PHASE = Object.fromEntries(PHASES.map(p=>[p.key,p]));
+
+// タスク（team / phase / time / what / links[] / ext[] / towns / note / chain）
+const TASKS = [
+  // 1. 統括班
+  { team:'toukatsu', phase:'prep', time:'9月〜', what:'全体進捗を俯瞰し各班の準備状況を確認。役員会・平安講社との連絡調整。9/14の全体説明会の進行を統括。', links:[], ext:['平安講社','役員会'] },
+  { team:'toukatsu', phase:'prep', time:'10/20 19:00', what:'参加者全員での最終打ち合わせを主催し、各班の当日段取りを最終確認する。', links:['shinkou','seiri','kitsuke'], ext:[] },
+  { team:'toukatsu', phase:'eve', time:'10/21 夕', what:'警備班・設営班と夜間警備の引き継ぎを確認。「設営完了→搬入→施錠」の連鎖を監督する。', links:['setsuei','keibi','ishou','unyu'], ext:[], chain:true },
+  { team:'toukatsu', phase:'day', time:'10/22 終日', what:'本部に常駐。進行班の位置情報・警備班の安全情報を一元集約し、会長・副会長へ随時報告する。', links:['shinkou','keibi'], ext:['執行部'] },
+  { team:'toukatsu', phase:'day', time:'随時', what:'不測の事態の最終調整・意思決定。7:00〜9:00の動線と御苑運行のボトルネックを監視する。', links:[], ext:[], chain:true },
+  { team:'toukatsu', phase:'after', time:'10/23〜26', what:'搬出・点検・返却の三段階が完了するまで全体を見届ける。', links:['ishou','unyu'], ext:[] },
+
+  // 2. 人事班
+  { team:'jinji', phase:'prep', time:'〜9月', what:'行列完歩が可能な人員を配置・配役調整。朝服4名（三位〜六位）・舎人4名は神事に関わるため実行委員会が厳選する。', links:['toukatsu'], ext:[], towns:true },
+  { team:'jinji', phase:'prep', time:'〜10月', what:'供奉・白丁を募集（目標200名）。41町内会から参加者を動員する。', links:[], ext:[], towns:true },
+  { team:'jinji', phase:'prep', time:'10月中旬', what:'最新名簿を確定し、整理班（受付）・衣装班（サイズ確認）・糧食班（発注数確定）へ即座に共有する。', links:['seiri','ishou','ryoushoku'], ext:[] },
+  { team:'jinji', phase:'day', time:'7:00〜', what:'整理班からの無断欠員報告を受けたら直ちに予備人員を差配し、着付班へ配役変更を指示する。', links:['seiri','kitsuke'], ext:[], chain:true },
+
+  // 3. 進行班
+  { team:'shinkou', phase:'prep', time:'9/30', what:'平安神宮へ車の乗り入れ申請（FAX）。駐車許可書・腕章5枚を手配する。', links:[], ext:['平安神宮'] },
+  { team:'shinkou', phase:'prep', time:'10/15 13:30', what:'宣状授与祭に四役4名・舎人4名・進行役3名（計11名）がスーツで参加。駐車許可書4台分・腕章5枚を受領する。', links:[], ext:['平安講社'] },
+  { team:'shinkou', phase:'prep', time:'事前', what:'ヤサカ観光バス3台（50人乗り）・タクシー2台の配車計画を作成する。', links:[], ext:['ヤサカ観光'] },
+  { team:'shinkou', phase:'eve', time:'10/20 15:00', what:'三位〜六位の4名で当日の予行練習。行列ルート・通過時刻を最終確認する。', links:['keibi'], ext:[] },
+  { team:'shinkou', phase:'day', time:'7:30〜9:00', what:'着付班の進捗を監視。9:00出発に合わせ、バス・タクシーの配車誘導を整理班・警備班と連携して執行する。', links:['kitsuke','seiri','keibi'], ext:['ヤサカ観光'], chain:true },
+  { team:'shinkou', phase:'day', time:'9:30', what:'タクシー3台（11名）出発、バス2〜3台で供奉侍全員を誘導。持具車1台。御苑到着後、第一社の着陣を統括班へ報告する。', links:['seiri','toukatsu'], ext:['ヤサカ観光'] },
+  { team:'shinkou', phase:'day', time:'10:00', what:'学校から御所へ出発。丸太町堺町御門で下車し、待機場所まで徒歩で誘導する。', links:['seiri'], ext:[] },
+  { team:'shinkou', phase:'day', time:'12:30〜13:30', what:'行列開始・列立て・整列（インカム使用）。13:30に延暦文官参朝列が出発する。', links:['keibi'], ext:[] },
+  { team:'shinkou', phase:'day', time:'〜14:30', what:'御苑〜平安神宮を巡行（約2km・約2時間）。16:30還幸祭、17:00バスで大宮小学校へ戻る。', links:['keibi'], ext:[] },
+
+  // 4. 整理班
+  { team:'seiri', phase:'eve', time:'10/21', what:'設営班が構築した受付動線・手荷物置き場を検証。体育館の時代衣装準備（ブルーシート6枚）と会議室の供奉衣装準備を確認する。', links:['setsuei'], ext:[] },
+  { team:'seiri', phase:'day', time:'7:00〜', what:'名簿に従って参加者の受付を開始。ビニール袋（着換え・靴用）と着換え場所の見取り図を配布する。', links:['jinji'], ext:[], chain:true },
+  { team:'seiri', phase:'day', time:'受付後', what:'着付班の空き状況に応じて参加者を順次誘導。無断欠員は即座に人事班へ報告する。', links:['kitsuke','jinji'], ext:[], chain:true },
+  { team:'seiri', phase:'day', time:'着付後', what:'参加者を校庭へ誘導し、個別・集合記念写真の整列を写真班・進行班と連携してサポートする。', links:['shashin','shinkou'], ext:[] },
+  { team:'seiri', phase:'day', time:'9:00', what:'供奉長・四役・写真班4名・高田衣装2名をタクシー2台で、供奉侍全員をバス2〜3台で誘導する。', links:['shinkou'], ext:['ヤサカ観光','高田衣装'] },
+  { team:'seiri', phase:'day', time:'17:30', what:'帰着後、体育館と会議室へ参加者を誘導する。', links:['setsuei'], ext:[] },
+
+  // 5. 警備班
+  { team:'keibi', phase:'prep', time:'事前', what:'太平警備との契約・調整窓口。警備人数・時刻・配置を確定する。', links:[], ext:['太平警備'] },
+  { team:'keibi', phase:'eve', time:'10/21 17:00', what:'設営完了時点から太平警備の夜間警備員（体育館常駐）への引き継ぎと施錠を指揮。翌朝まで備品を警備する。', links:['setsuei','ishou','unyu'], ext:['太平警備'], chain:true },
+  { team:'keibi', phase:'day', time:'校庭出入', what:'車両が校庭を出入りする際の交通誘導を進行班と連携して実施する。', links:['shinkou'], ext:[] },
+  { team:'keibi', phase:'day', time:'巡行中', what:'沿道警備を指揮。行列ルートに沿った安全確保とインカムでの進行班連携を行う。', links:['shinkou'], ext:[] },
+  { team:'keibi', phase:'after', time:'〜10/23 朝', what:'当日17:00〜翌朝9:00、体育館の備品を太平警備が継続警備する。', links:[], ext:['太平警備'] },
+
+  // 6. 運輸班
+  { team:'unyu', phase:'prep', time:'9月中旬〜下旬', what:'供奉衣装・裃・収納10缶を運送。往（蔵出し）車2台5人／復（蔵入れ）車2台5人。学校〜平安神宮の往復2回。', links:['ishou'], ext:['西陣運輸','高田衣装'] },
+  { team:'unyu', phase:'prep', time:'平日', what:'平日作業のため、積下ボランティアの確保を人事班と調整する。', links:['jinji'], ext:['西陣運輸'] },
+  { team:'unyu', phase:'eve', time:'10/21 9:00', what:'時代衣装・持具・笠箱を蔵出し（3人）。平安神宮→学校へ搬入（往復2回）。応天門西側の冷泉通りから入る。', links:['ishou','setsuei'], ext:['西陣運輸','高田衣装'], chain:true },
+  { team:'unyu', phase:'eve', time:'搬入時', what:'西陣運輸へ乗り入れ許可証を手渡し。荷物個数を衣装班と確認し、設営班確保エリアへ正確に卸す。', links:['ishou','setsuei'], ext:['西陣運輸'], chain:true },
+  { team:'unyu', phase:'after', time:'10/23 8:30', what:'蔵入れ（3人）。学校で積み込み→9:00平安神宮へ→10:00冷泉通りから乗り入れ、二階倉庫へ搬入（2名立合い）。', links:['ishou'], ext:['西陣運輸','高田衣装'] },
+
+  // 7. 衣装班
+  { team:'ishou', phase:'prep', time:'10月上旬', what:'供奉衣装の蔵出し・開缶・内容物確認・整理（4人、体育館または会議室）。', links:['unyu'], ext:['高田衣装'] },
+  { team:'ishou', phase:'prep', time:'確認後', what:'高田衣装との窓口として蔵出し衣装を確認し、設営班の指定場所に保管する。', links:['setsuei'], ext:['高田衣装'] },
+  { team:'ishou', phase:'eve', time:'10/21', what:'供奉衣装準備（2人）。配役ごとのセットアップを前日までに完了。搬入・配列・破損確認、目録照合（平安神宮所有物のみ）。', links:['kitsuke','unyu'], ext:['高田衣装'], chain:true },
+  { team:'ishou', phase:'day', time:'朝', what:'着付班がスムーズに作業できるよう、配役別の衣装を受け渡す。', links:['kitsuke'], ext:['高田衣装'] },
+  { team:'ishou', phase:'day', time:'17:30', what:'帰着後、脱衣衣装の陰干し・缶収納を運輸班と連携して指揮。片付けに女性10名・アイロン3台が必要。', links:['unyu'], ext:['高田衣装'] },
+  { team:'ishou', phase:'after', time:'10/23・25・26', what:'10/23倉入れ・点検。10/25返却類を再点検し和室へ。10/26平安神宮へ全て返却（草履含む、5人）。', links:['unyu'], ext:['高田衣装'] },
+
+  // 8. 着付班
+  { team:'kitsuke', phase:'prep', time:'10月上旬', what:'着付け教室を2〜3回実施し、地域ボランティア20〜30名の技術を平準化する（紋付・袴の正装）。', links:['ishou'], ext:['高田衣装'] },
+  { team:'kitsuke', phase:'prep', time:'9/26・10/10・10/17 18:30', what:'袴の着付練習を実施する。', links:['ishou'], ext:[] },
+  { team:'kitsuke', phase:'eve', time:'10/21 13:00〜15:00', what:'四役（三位〜六位）・舎人の試着。高田衣装5名から指導を受け、配役別の着付ラインを構築する。', links:['ishou','jinji'], ext:['高田衣装'] },
+  { team:'kitsuke', phase:'day', time:'7:30〜8:45', what:'着付開始（高田衣装同席）。整理班から送り込まれる参加者を配役別の着付ラインへ迅速に配置する。', links:['seiri'], ext:['高田衣装'], chain:true },
+  { team:'kitsuke', phase:'day', time:'着付後', what:'着付完了者を写真班へ送り、進行班の出発時刻（9:00）に厳守で間に合わせる。', links:['shashin','shinkou'], ext:['高田衣装'], chain:true },
+  { team:'kitsuke', phase:'after', time:'17:30 / 10/25', what:'当日17:30に脱衣の整理・陰干しを衣装班と協力。10/25に整理・缶収納（4人）。', links:['ishou'], ext:[] },
+
+  // 9. 写真・広報班
+  { team:'shashin', phase:'prep', time:'事前', what:'指定写真業者と調整し撮影計画を策定。のぼり・ポスター・大宮時代祭HP等の広報物制作もディレクションする。', links:['toukatsu'], ext:['指定写真業者'] },
+  { team:'shashin', phase:'day', time:'7:00〜', what:'早朝より撮影開始（デジカメ、3〜5名、一日）。着付完了者から順次、個別記念写真へ誘導する（整理班経由で進捗把握）。', links:['seiri','kitsuke'], ext:[] },
+  { team:'shashin', phase:'day', time:'9:00頃', what:'バス乗車直前の約15分間で校庭にて全体集合写真（①参列者②手伝い③見学者④個別）。撮影位置の目印は前日に設営班と設置。', links:['shinkou','setsuei'], ext:[] },
+  { team:'shashin', phase:'day', time:'巡行中', what:'御所・平安神宮・行進中の記録撮影を終日担当する。', links:['shinkou'], ext:[] },
+  { team:'shashin', phase:'after', time:'後日', what:'撮影データの納品管理。直会・その他の場で写真を発表する。', links:['toukatsu'], ext:[] },
+
+  // 10. 糧食班
+  { team:'ryoushoku', phase:'prep', time:'10月中旬', what:'人事班から確定人数を受領し、鳴海餅本店へ約200食（行列・スタッフ・業者用）の折詰を予約。当日配送を確認する。', links:['jinji'], ext:['鳴海餅本店'] },
+  { team:'ryoushoku', phase:'prep', time:'事前', what:'前日警備の夕食・朝食、行列参加者の朝食、高田衣装の朝食・昼食を手配。コンビニ弁当・おにぎりは不可。', links:['keibi'], ext:['鳴海餅本店','高田衣装'] },
+  { team:'ryoushoku', phase:'day', time:'8:30〜', what:'鳴海餅へお弁当の数量と配達を確認する。', links:[], ext:['鳴海餅本店'] },
+  { team:'ryoushoku', phase:'day', time:'御苑', what:'御苑の昼食エリアで設営班から引き継いだ緑の毛氈を敷設し、大宮専用の別紐の折詰を分配。お茶も一個用意する。', links:['setsuei'], ext:['鳴海餅本店'], note:'他学区＝赤毛氈・紅白紐／大宮＝緑毛氈・別紐。取り違え厳禁' },
+  { team:'ryoushoku', phase:'day', time:'食後', what:'馬方の食事は不要（心付けを渡す）。食後のゴミ回収を指揮。お弁当係は終了後に学校へ戻る。', links:[], ext:[] },
+
+  // 11. 設営班
+  { team:'setsuei', phase:'prep', time:'9/14 15:00', what:'体育館で全体説明会の椅子設営を行う。', links:['toukatsu'], ext:[] },
+  { team:'setsuei', phase:'eve', time:'10/21', what:'体育館・会議室を設営（3人）。ブルーシート（衣装用8枚・弁当/お茶3枚＝計6枚以上）を敷き、和室から体育館へ衣装を運ぶ。', links:['seiri','ishou','ryoushoku'], ext:['機材レンタル業者'], chain:true },
+  { team:'setsuei', phase:'eve', time:'10/21', what:'「整理班の受付動線」「衣装班の保管エリア」「着付班の作業スペース」「糧食班の資材置き場」を明記した会場図を全班へ共有する。', links:[], ext:[] },
+  { team:'setsuei', phase:'eve', time:'10/21', what:'デジタル受付機材の構築を完了し当日整理班へ引き渡す。参加者の衣類の袋を準備する。', links:['seiri'], ext:[] },
+  { team:'setsuei', phase:'day', time:'撮影前', what:'全体集合写真の撮影位置の目印（バミリ）を写真班と設置する。', links:['shashin'], ext:[] },
+  { team:'setsuei', phase:'after', time:'10/23 12:00', what:'体育館の清掃を行う。', links:['ishou'], ext:[] },
+];
+
+// 上位レイヤー
+const TIER_UP = [
+  { id:'exec',  name:'会長・副会長（執行部）', desc:'行列奉仕全体の最高意思決定。外部交渉と不測時の最終判断。' },
+  { id:'kansha',name:'感謝事業部', desc:'協賛金・寄付金の管理、記念品約150名分の調達・保管、各町内会への返礼。' },
+];
+// 基盤レイヤー
+const TIER_BASE = [
+  { id:'towns', name:'41町内会', desc:'行列参加者の輩出基盤・当日の実働ボランティア', match:t=>!!t.towns||t.key==='seiri' },
+  { id:'kousha',name:'平安講社', desc:'時代祭の本部組織', match:t=>t.ext.includes('平安講社') },
+  { id:'takada',name:'高田衣装', desc:'着付・衣装', match:t=>t.ext.includes('高田衣装') },
+  { id:'nishijin',name:'西陣運輸', desc:'運送全般', match:t=>t.ext.includes('西陣運輸') },
+  { id:'yasaka',name:'ヤサカ観光', desc:'バス（3台）', match:t=>t.ext.includes('ヤサカ観光') },
+  { id:'narumi',name:'鳴海餅本店', desc:'弁当', match:t=>t.ext.includes('鳴海餅本店') },
+  { id:'taihei',name:'太平警備', desc:'警備', match:t=>t.ext.includes('太平警備') },
+];
+
+// 連携の連鎖（ボトルネック）
+const CHAINS = [
+  { phase:'eve', time:'前日 17:00', title:'会場の引き継ぎ',
+    steps:[
+      { team:'setsuei', text:'会場設営を完了する' },
+      { team:'ishou',   text:'衣装を搬入・配列する' },
+      { team:'unyu',    text:'（運輸班とともに搬入）' },
+      { team:'keibi',   text:'夜間警備員へ引き継ぎ・施錠する' },
+    ],
+    warn:'この流れが滞ると夜間警備体制の破綻に直結します。各班は時間厳守で動くこと。' },
+  { phase:'day', time:'当日 7:00〜9:00', title:'動線の確保',
+    steps:[
+      { team:'seiri',   text:'受付・欠員把握' },
+      { team:'jinji',   text:'代役を選定' },
+      { team:'kitsuke', text:'配役へ流し込み' },
+      { team:'shinkou', text:'9:00 バス出発' },
+    ],
+    warn:'連携に5分の遅滞が出ると9:00のバス出発が遅れ、京都御苑での行列全体の運行に多大な影響を及ぼします。' },
+];
+
+/* ============================================================
+   ユーティリティ
+   ============================================================ */
+function hexToRgba(hex,a){
+  const h=hex.replace('#','');
+  const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+function el(tag,cls,html){const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;}
+
+/* ============================================================
+   状態
+   ============================================================ */
+let state = { team:null, phase:'all' };
+
+/* ============================================================
+   描画：フィルターチップ
+   ============================================================ */
+function renderChips(){
+  const tr=document.getElementById('team-rail');
+  tr.innerHTML='';
+  TEAMS.forEach(t=>{
+    const c=el('button','chip team-chip');
+    c.type='button';
+    c.setAttribute('aria-pressed', String(state.team===t.key));
+    c.dataset.key=t.key;
+    c.innerHTML=`<span class="dot" style="background:${t.color}"></span>${t.name}`;
+    if(state.team===t.key){ c.style.background=t.color; }
+    c.onclick=()=>selectTeam(state.team===t.key?null:t.key);
+    tr.appendChild(c);
+  });
+
+  const pr=document.getElementById('phase-rail');
+  pr.innerHTML='';
+  PHASES.forEach(p=>{
+    const c=el('button','chip phase-chip');
+    c.type='button';
+    c.setAttribute('aria-pressed', String(state.phase===p.key));
+    c.innerHTML=`<span class="ph-name">${p.short||p.label}</span><span class="ph-date">${p.date||''}</span>`;
+    c.onclick=()=>{ state.phase=p.key; renderAll(); };
+    pr.appendChild(c);
+  });
+}
+
+/* ============================================================
+   描画：俯瞰マップ
+   ============================================================ */
+function renderOrgMap(){
+  const team = state.team ? TEAM[state.team] : null;
+
+  // 上位
+  const up=document.getElementById('tier-up'); up.innerHTML='';
+  TIER_UP.forEach(n=>{
+    const lit = team && ((n.id==='exec' && team.ext.includes('執行部')) || (n.id==='exec' && team.key==='toukatsu'));
+    const node=el('div','node flex1'+(lit?' lit':''));
+    if(lit) node.style.color=team.color;
+    node.innerHTML=`<span class="node-name">${n.name}</span><span class="node-desc">${n.desc}</span>`;
+    up.appendChild(node);
+  });
+
+  // 中核（11班タイル）
+  const grid=document.getElementById('core-grid'); grid.innerHTML='';
+  TEAMS.forEach(t=>{
+    const tile=el('button','core-tile');
+    tile.type='button';
+    const isSelf = team && team.key===t.key;
+    const isLinked = team && team.links.includes(t.key);
+    if(isSelf){ tile.classList.add('is-self'); tile.style.color=t.color; }
+    else if(team && !isLinked){ tile.classList.add('dim'); }
+    let flag='';
+    if(isSelf) flag=`<span class="self-flag" style="background:${t.color}">あなた</span>`;
+    else if(isLinked) flag=`<span class="self-flag" style="background:${t.color}">連携</span>`;
+    tile.innerHTML=`${flag}<span class="ct-no">${t.no}</span><span class="ct-name">${t.name}</span><span class="ct-bar" style="background:${t.color}"></span>`;
+    tile.setAttribute('aria-label', t.name+(isSelf?'（選択中）':''));
+    tile.onclick=()=>selectTeam(isSelf?null:t.key);
+    grid.appendChild(tile);
+  });
+
+  // 基盤
+  const base=document.getElementById('tier-base'); base.innerHTML='';
+  TIER_BASE.forEach(n=>{
+    const lit = team && n.match(team);
+    const node=el('div','node'+(lit?' lit':''));
+    if(lit) node.style.color=team.color;
+    node.innerHTML=`<span class="node-name">${n.name}</span><span class="node-desc">${n.desc}</span>`;
+    base.appendChild(node);
+  });
+
+  document.getElementById('orgmap-hint').textContent = team
+    ? `${team.name}は「中核」のハブです。上位（執行部・感謝事業部）と基盤（41町内会・各業者）の間で、ハイライトされた相手と連携します。`
+    : '自分の班を選ぶと、上位の意思決定層と下位の実行基盤の間で、あなたが誰と連携するハブかが浮かび上がります。';
+}
+
+/* ============================================================
+   描画：サマリー＋タスク
+   ============================================================ */
+function badgeTeam(key){
+  const t=TEAM[key]; if(!t) return '';
+  return `<span class="badge" style="background:${hexToRgba(t.color,.12)};color:${t.color}">`
+    + `<span class="bd" style="background:${t.color}"></span>${t.name}</span>`;
+}
+function badgesFor(links,ext,towns){
+  let h='';
+  (links||[]).forEach(k=>h+=badgeTeam(k));
+  (ext||[]).forEach(v=>h+=`<span class="badge-ext">${v}</span>`);
+  if(towns) h+=`<span class="badge-town">41町内会</span>`;
+  if(!h) h=`<span style="font-size:11.5px;color:var(--ink-3)">この時点の対外連携はなし（班内・本部対応）</span>`;
+  return h;
+}
+
+function renderSummary(){
+  const mount=document.getElementById('summary-mount');
+  mount.innerHTML='';
+  if(!state.team){ return; }
+  const t=TEAM[state.team];
+
+  const box=el('div','summary');
+  box.style.borderLeftColor=t.color;
+  box.innerHTML=`
+    <div class="summary-top">
+      <span class="summary-no" style="background:${t.color}">${String(t.no).padStart(2,'0')}</span>
+      <span class="summary-name">${t.name}</span>
+      <span class="summary-role">${t.role}</span>
+    </div>
+    <p class="summary-tag">${t.tag}</p>
+    <div class="summary-links">
+      <div class="sl-label">最重要連携班</div>
+      <div class="badge-wrap">${t.links.map(badgeTeam).join('')}</div>
+    </div>
+    <div class="summary-links">
+      <div class="sl-label">管轄する業者・地域</div>
+      <div class="badge-wrap">${badgesFor([],t.ext,t.towns)}</div>
+    </div>`;
+  mount.appendChild(box);
+}
+
+function renderTasks(){
+  const mount=document.getElementById('task-mount');
+  mount.innerHTML='';
+  if(!state.team){ return; }
+  const t=TEAM[state.team];
+
+  let list=TASKS.filter(x=>x.team===state.team);
+  if(state.phase!=='all') list=list.filter(x=>x.phase===state.phase);
+
+  const head=el('div','section-title', `${t.name} のタスク`);
+  mount.appendChild(head);
+
+  if(list.length===0){
+    mount.appendChild(el('div','empty',
+      `${t.name}には<b>「${PHASE[state.phase].short||PHASE[state.phase].label}」</b>の主担当タスクがありません。<br>「全期間」に切り替えると、この班の全タスクを確認できます。`));
+    updateStatus(0);
+    return;
+  }
+
+  const wrap=el('div','tasklist');
+  list.forEach(x=>{
+    const card=el('div','task');
+    const phLabel = PHASE[x.phase].short || PHASE[x.phase].label;
+    card.innerHTML=`
+      <div class="task-head">
+        <span class="task-time" style="background:${t.color}">${x.time}</span>
+        ${x.chain?`<span class="chain-flag">要注意</span>`:''}
+        <span class="task-phase">${phLabel}</span>
+      </div>
+      <div class="task-body">
+        <div class="task-what">${x.what}</div>
+        ${x.note?`<div class="task-note">${x.note}</div>`:''}
+        <div class="task-link-label">連絡・相談先</div>
+        <div class="badge-wrap">${badgesFor(x.links,x.ext,x.towns)}</div>
+      </div>`;
+    wrap.appendChild(card);
+  });
+  mount.appendChild(wrap);
+  updateStatus(list.length);
+}
+
+/* ============================================================
+   描画：連携の連鎖
+   ============================================================ */
+function renderChains(){
+  const mount=document.getElementById('chains-mount');
+  mount.innerHTML='';
+  CHAINS.forEach(ch=>{
+    const hot = state.phase===ch.phase;
+    const box=el('div','chain'+(hot?' hot':''));
+    let stepsHtml='';
+    ch.steps.forEach((s,i)=>{
+      const st=TEAM[s.team];
+      const self = state.team===s.team;
+      const stepEl = `
+        <div class="cstep${self?' self':''}" ${self?`style="color:${st.color}"`:''}>
+          <span class="cnum" style="background:${st.color}">${i+1}</span>
+          <span class="ctxt"><b>${st.name}</b>：${s.text}</span>
+        </div>`;
+      stepsHtml+=stepEl;
+    });
+    box.innerHTML=`
+      <div class="chain-head">
+        <span class="chain-time">${ch.time}</span>
+        <span class="chain-title">${ch.title}</span>
+      </div>
+      <div class="chain-steps">${stepsHtml}</div>
+      <div class="chain-warn">${ch.warn}</div>`;
+    mount.appendChild(box);
+  });
+}
+
+/* ============================================================
+   ステータス行
+   ============================================================ */
+function updateStatus(count){
+  const line=document.getElementById('status-line');
+  const prompt=document.getElementById('pickprompt');
+  if(!state.team){
+    line.hidden=true;
+    prompt.hidden=false;
+    return;
+  }
+  prompt.hidden=true;
+  line.hidden=false;
+  const t=TEAM[state.team];
+  document.getElementById('status-now').innerHTML =
+    `選択中：<b>${t.name}</b> ／ フェーズ：<b>${PHASE[state.phase].short||PHASE[state.phase].label}</b>`;
+  document.getElementById('status-count').textContent = `該当タスク ${count}件`;
+}
+
+/* ============================================================
+   操作
+   ============================================================ */
+function selectTeam(key){
+  state.team=key;
+  renderAll();
+  // 選択するたび、まず「組織の俯瞰」（自分の位置と連携先）を画面内へ。
+  // 上部固定フィルターの高さを差し引き、見出しが隠れないようにする。
+  const reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const head = document.getElementById('orgmap-head');
+  if(head){
+    const bar  = document.querySelector('.filters');
+    const barH = bar ? bar.getBoundingClientRect().height : 0;
+    const y = head.getBoundingClientRect().top + window.scrollY - barH - 8;
+    window.scrollTo({ top: Math.max(0, y), behavior: reduce ? 'auto' : 'smooth' });
+  }
+}
+
+function renderAll(){
+  renderChips();
+  renderOrgMap();
+  renderSummary();
+  renderTasks();
+  renderChains();
+  if(!state.team) updateStatus(0);
+}
+
+document.getElementById('reset-btn').onclick=()=>{ state={team:null,phase:'all'}; renderAll(); window.scrollTo({top:0,behavior:'smooth'}); };
+
+// 初期描画
+renderAll();
+</script>
+</body>
+</html>
