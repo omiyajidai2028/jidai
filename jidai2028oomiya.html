@@ -318,26 +318,26 @@
 
         .timer-label {
             font-family: var(--font-serif);
-            font-size: 1.35rem; /* さらにもう一段階大きくして主張を最大化 */
+            font-size: 1.35rem; /* 主張するサイズは維持 */
             font-weight: 900;
             
-            /* 金と銀を交差させた重厚なメタリックグラデーション */
+            /* 純粋な「輝く銀」のメタリックグラデーション */
             background: linear-gradient(
                 to bottom,
-                #FFF7D6 0%,     /* 上部：光を受ける明るい金 */
-                #D4AF37 25%,    /* 上半分：雅な黄金色 */
-                #E2E5EA 48%,    /* 中央上：鋭利な銀のハイライト */
-                #7A8394 52%,    /* 中央下：銀特有の深い影 */
-                #B8860B 75%,    /* 下半分：渋みのあるアンティークゴールド */
-                #FCEEAA 100%    /* 下端：照り返しの金 */
+                #FFFFFF 0%,     /* 上部：白く強い光の反射 */
+                #DCE1E9 30%,    /* 上半分：明るい純銀 */
+                #858F9E 48%,    /* 中央上：鋭利なハイライト */
+                #4A5568 52%,    /* 中央下：金属特有の深い影（ここで立体感を出す） */
+                #A0ABC0 75%,    /* 下半分：落ち着いた銀 */
+                #F0F4F8 100%    /* 下端：照り返し */
             );
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            color: #D4AF37; /* グラデーション非対応ブラウザの予備 */
+            color: #A0ABC0;
 
-            /* 金色の淡い後光と、文字を黒背景から力強く浮かび上がらせる濃い影 */
-            filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.4)) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.95));
+            /* 冷たく鋭い光と、文字を際立たせる濃い影 */
+            filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.5)) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.9));
             
             letter-spacing: 0.05em;
         }
