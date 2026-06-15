@@ -984,6 +984,77 @@
             .appeal-card { padding: 22px 20px; }
             .sub-heading { font-size: 1.15rem; }
         }
+
+        /* =========================================
+           最終調整：スマホ／PCの視認性向上（既存デザインは維持）
+           - トップの上部余白を引き締め、キャッチを一回り大きく
+           - 見出し・本文の改行バランスを最適化（対応ブラウザのみ自動適用）
+        ========================================= */
+        h1, h2, h3, h4 { text-wrap: balance; }
+        p { text-wrap: pretty; }
+
+        @media (max-width: 768px) {
+            /* トップ：頭上の余白を詰めて「間延び」を解消 */
+            #hero {
+                padding-top: 34px;
+                padding-bottom: 48px;
+            }
+            .hero-catch-container {
+                margin-top: 12px;
+                margin-bottom: 22px;
+            }
+
+            /* メインキャッチを一回り大きく・力強く（min/可変幅/maxを引き上げ） */
+            .hero-main-catch {
+                font-size: clamp(1.65rem, 7vw, 2.35rem);
+                line-height: 1.5;
+            }
+            /* 「なくよ(794)ウグイス平安京」が小さく見えないよう拡大 */
+            .hero-main-catch .phrase {
+                font-size: 0.95em;
+                margin-bottom: 10px;
+            }
+            .hero-main-catch .highlight {
+                font-size: 1.12em;
+            }
+        }
+
+        /* =========================================
+           追加(B選択)：補足テキストの底上げ ＋ スマホ操作性
+           ― 既存デザインは維持／末尾追記で上書き
+        ========================================= */
+        /* --- A：薄い・小さい補足テキストの可読性を確保（色とサイズのみ） --- */
+        .procession-image-label     { font-size: 0.9rem; }
+        .procession-caption         { font-size: 0.9rem; }
+        .course-map-caption         { font-size: 0.92rem; }
+        .photo-frame .photo-caption { font-size: 0.94rem; }
+        .role-tag                   { font-size: 0.88rem; }
+        .photo-placeholder .ph-note { color: #6B6150; }   /* 薄すぎる注記を可読な濃さへ */
+
+        /* --- B：スマホのヘッダーナビを「押しやすく・読みやすく」 --- */
+        @media (max-width: 768px) {
+            .nav-links {
+                width: max-content;          /* 収まる端末では従来どおり中央表示 */
+                max-width: 100%;
+                margin: 0 auto;
+                justify-content: flex-start;
+                flex-wrap: nowrap;
+                gap: 2px;
+                font-size: 0.85rem;          /* 文字を拡大（0.75 → 0.85rem） */
+                overflow-x: auto;            /* 入りきらない端末は横スワイプで全項目に到達 */
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;       /* 細いスクロールバーは隠す */
+                padding: 0 6px;
+                box-sizing: border-box;
+            }
+            .nav-links::-webkit-scrollbar { display: none; }
+            .nav-links a {
+                flex: 0 0 auto;
+                padding: 13px 11px;          /* タップ範囲を拡大（高さ約42px・指で押しやすく） */
+                white-space: nowrap;
+                border-radius: 6px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1281,7 +1352,7 @@
                 <img src="course.jpg" alt="時代祭 行列コース地図" id="courseMapImg" title="クリックで拡大">
                 <div class="course-map-caption">
                     <strong>出発 12:00</strong> 京都御所（堺町御門 12:15）→ 丸太町通 → 烏丸御池（12:50）→ 御池通 → 河原町御池 → 木屋町通（13:30）→ 三条通（三条大橋 13:40）→ 三条神宮道（14:10）→ 仁王門通（14:20）→ <strong>到着 14:30</strong> 平安神宮（応天門）<br>
-                    <span style="font-size: 0.8rem; color: #888; margin-top: 6px; display: block;">※行列通過所要時間：約2時間 ／ 地図をクリックすると拡大表示されます</span>
+                    <span style="font-size: 0.85rem; color: #666; margin-top: 6px; display: block;">※行列通過所要時間：約2時間 ／ 地図をクリックすると拡大表示されます</span>
                 </div>
             </div>
             
