@@ -1623,7 +1623,35 @@
                 }
             }
 
-            // 0b. スマホでは動画の高さを「約20年に一度の大役」の箱の下端まで伸ばす。
+            // 0b. Hero内のコンテンツ（見出し・箱）を、動画再生開始まで非表示にして
+            //     動画が映ってから浮かび上がるようにする。
+            //     既存の fade-in/.is-visible の仕組みをそのまま利用する。
+            const heroContainer = document.querySelector('#hero > .container');
+            if (heroContainer && heroVideo) {
+                // Hero の container だけ observer から外し、動画イベントで制御
+                heroContainer.classList.remove('fade-in'); // observer の監視対象から除外
+                heroContainer.style.opacity = '0';
+                heroContainer.style.transform = 'translateY(16px)';
+                heroContainer.style.transition = 'opacity 0.45s ease-out, transform 0.45s ease-out';
+
+                let heroRevealed = false;
+                function revealHero() {
+                    if (heroRevealed) return;
+                    heroRevealed = true;
+                    // 動画が映った直後に文字・箱をフワッと表示
+                    requestAnimationFrame(() => {
+                        heroContainer.style.opacity = '1';
+                        heroContainer.style.transform = 'translateY(0)';
+                    });
+                }
+
+                // canplay: 動画の最初のフレームが描画可能になった瞬間
+                heroVideo.addEventListener('canplay', revealHero, { once: true });
+                // フォールバック: 動画が来なくても 1.2 秒後には必ず表示
+                setTimeout(revealHero, 1200);
+            }
+
+            // 0c. スマホでは動画の高さを「約20年に一度の大役」の箱の下端まで伸ばす。
             //     PC（769px以上）では従来どおりHero全体（CSSの height:100%）に戻す。
             const heroSection = document.getElementById("hero");
             const heroRoleBox = document.querySelector(".hero-role-block");
