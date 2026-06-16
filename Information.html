@@ -151,9 +151,71 @@
            Hero セクション（トップ）
         ========================================= */
         #hero {
+            position: relative;          /* 背景動画の基準 */
+            overflow: hidden;            /* はみ出した動画を切り取る */
+            isolation: isolate;          /* 重ね順を局所化 */
             padding: 80px 20px 60px;
             text-align: center;
+            /* 動画が読み込めない場合のフォールバック背景 */
             background: linear-gradient(180deg, #FFFFFF 0%, var(--color-bg) 100%);
+        }
+
+        /* 背景で流れる動画（音声なし） */
+        .hero-bg-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;           /* 縦動画を全面に敷き、はみ出し部分は切り取る */
+            object-position: center;
+            z-index: 0;
+            pointer-events: none;        /* リンク等の操作を妨げない */
+            user-select: none;
+        }
+
+        /* 文字を読みやすくするための覆い（クリーム色の半透明） */
+        .hero-bg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            /* 上部（見出し付近）を濃いめにして可読性を確保し、
+               下部はページ背景色に馴染ませて次のセクションへ自然に繋ぐ */
+            background: linear-gradient(
+                180deg,
+                rgba(249, 248, 246, 0.80) 0%,
+                rgba(249, 248, 246, 0.66) 35%,
+                rgba(249, 248, 246, 0.74) 68%,
+                rgba(249, 248, 246, 0.96) 100%
+            );
+        }
+
+        /* Hero内のコンテンツは覆いより前面に */
+        #hero > .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 動画の上でも文字がにじまないよう、淡い白フチを足して輪郭を補強 */
+        #hero .hero-main-catch,
+        #hero .hero-role-title,
+        #hero .hero-role-text {
+            text-shadow: 0 1px 8px rgba(249, 248, 246, 0.9),
+                         0 0 2px rgba(249, 248, 246, 0.85);
+        }
+
+        /* 動きを抑える設定の利用者には動画を出さず、静かな背景にする */
+        @media (prefers-reduced-motion: reduce) {
+            .hero-bg-video {
+                display: none;
+            }
+            .hero-bg-overlay {
+                background: var(--color-bg);
+            }
         }
 
         /* =========================================
@@ -1072,6 +1134,13 @@
     </header>
 
     <section id="hero">
+        <!-- 背景動画（音声なし・自動再生・ループ）。ファイルは同じフォルダの top.mp4 を参照 -->
+        <video class="hero-bg-video" autoplay muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1">
+            <source src="top.mp4" type="video/mp4">
+        </video>
+        <!-- 文字を読みやすくするための覆い -->
+        <div class="hero-bg-overlay" aria-hidden="true"></div>
+
         <div class="container fade-in" style="padding-top: 0;">
             <div class="hero-catch-container">
                 <h1 class="hero-main-catch">
@@ -1496,7 +1565,18 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            
+
+            // 0. 背景動画は必ず無音で再生（ブラウザの自動再生制限対策）
+            const heroVideo = document.querySelector(".hero-bg-video");
+            if (heroVideo) {
+                heroVideo.muted = true;        // 念のためプロパティでも無音を保証
+                heroVideo.volume = 0;
+                const tryPlay = heroVideo.play();
+                if (tryPlay && typeof tryPlay.catch === "function") {
+                    tryPlay.catch(() => { /* 自動再生がブロックされても静かに無視 */ });
+                }
+            }
+
             // 1. カウントダウンタイマー機能
             const targetDate = new Date("2028-10-22T00:00:00+09:00").getTime();
 
