@@ -298,12 +298,10 @@
         @media (max-width: 768px) {
             /* スマホでは縦長になり、動画全体を敷くと「上の方（空・建物）」が
                見出しの裏に来て人物が下のカードに隠れてしまう。
-               そこで動画を見出し背後の帯に限定し、上部を切って
-               人物（顔）が見える中央の帯を表示する。 */
+               そこで動画の高さは JS で「約20年に一度の大役」の箱の下端まで
+               に合わせ（fitHeroVideo）、上を切って中央の人物が出る位置を表示する。 */
             .hero-bg-video {
-                height: 60vh;            /* 見出し背後の帯だけに動画を配置 */
-                min-height: 360px;       /* 小さめの画面でも見出しを確実に覆う */
-                object-position: 50% 45%;/* 上（空）を切り、中央の人物が出る位置 */
+                object-position: 50% 42%;/* 上（空）を切り、中央の人物が出る位置 */
             }
             .hero-catch-container {
                 margin: 25px auto 20px;
@@ -1049,6 +1047,43 @@
             .hero-role-title { font-size: 1.22rem; }
             .hero-role-text { font-size: 1.02rem; }
             .recruit-badge { font-size: 0.95rem; padding: 8px 16px; }
+
+            /* 「約20年に一度の大役」の箱を半透明（すりガラス風）にして、
+               箱の下端まで動画が透けて見えるようにする。
+               文字はぼかし＋白フチで可読性を確保。 */
+            .hero-bg-overlay {
+                /* 動画が透けるよう覆いを軽くする（見出しは下の白フチで保護） */
+                background: linear-gradient(
+                    180deg,
+                    rgba(249, 248, 246, 0.45) 0%,
+                    rgba(249, 248, 246, 0.28) 42%,
+                    rgba(249, 248, 246, 0.33) 66%,
+                    rgba(249, 248, 246, 0.94) 100%
+                );
+            }
+            .hero-role-block {
+                background: rgba(255, 255, 255, 0.18);
+                border: 1px solid rgba(255, 255, 255, 0.5);
+                border-top: 4px solid var(--color-primary);
+                -webkit-backdrop-filter: blur(12px) saturate(1.1);
+                backdrop-filter: blur(12px) saturate(1.1);
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+            }
+            /* すりガラス非対応ブラウザでは白みを足して可読性を確保 */
+            @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+                .hero-role-block { background: rgba(255, 255, 255, 0.72); }
+            }
+            /* 動画の上でも文字が読めるよう白フチを強める */
+            #hero .hero-main-catch {
+                text-shadow: 0 1px 12px rgba(249, 248, 246, 0.98),
+                             0 0 4px rgba(249, 248, 246, 0.95);
+            }
+            #hero .hero-role-title,
+            #hero .hero-role-text {
+                text-shadow: 0 1px 6px rgba(255, 255, 255, 0.95),
+                             0 0 2px rgba(255, 255, 255, 0.9);
+            }
+
             .beginner-box { padding: 28px 20px; }
             .beginner-box h3 { font-size: 1.2rem; }
             .beginner-list li { font-size: 1.02rem; padding-left: 36px; }
@@ -1585,6 +1620,33 @@
                     tryPlay.catch(() => { /* 自動再生がブロックされても静かに無視 */ });
                 }
             }
+
+            // 0b. スマホでは動画の高さを「約20年に一度の大役」の箱の下端まで伸ばす。
+            //     PC（769px以上）では従来どおりHero全体（CSSの height:100%）に戻す。
+            const heroSection = document.getElementById("hero");
+            const heroRoleBox = document.querySelector(".hero-role-block");
+            const mqMobile = window.matchMedia("(max-width: 768px)");
+
+            function fitHeroVideo() {
+                if (!heroVideo || !heroSection || !heroRoleBox) return;
+                if (mqMobile.matches) {
+                    const heroTop = heroSection.getBoundingClientRect().top;
+                    const boxBottom = heroRoleBox.getBoundingClientRect().bottom;
+                    const h = Math.round(boxBottom - heroTop);
+                    if (h > 0) heroVideo.style.height = h + "px";
+                } else {
+                    heroVideo.style.height = "";   // CSSの 100% に戻す
+                }
+            }
+
+            fitHeroVideo();
+            // フォント読込後にレイアウトが変わることがあるので再計測
+            if (document.fonts && document.fonts.ready) {
+                document.fonts.ready.then(fitHeroVideo);
+            }
+            window.addEventListener("load", fitHeroVideo);
+            window.addEventListener("resize", fitHeroVideo);
+            window.addEventListener("orientationchange", fitHeroVideo);
 
             // 1. カウントダウンタイマー機能
             const targetDate = new Date("2028-10-22T00:00:00+09:00").getTime();
