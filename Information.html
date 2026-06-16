@@ -301,7 +301,7 @@
                そこで動画の高さは JS で「約20年に一度の大役」の箱の下端まで
                に合わせ（fitHeroVideo）、上を切って中央の人物が出る位置を表示する。 */
             .hero-bg-video {
-                object-position: 50% 42%;/* 上（空）を切り、中央の人物が出る位置 */
+                object-position: 50% 34%;/* 動画位置を上げる（数値を下げると上寄りに） */
             }
             .hero-catch-container {
                 margin: 25px auto 20px;
@@ -1052,18 +1052,17 @@
                箱の下端まで動画が透けて見えるようにする。
                文字はぼかし＋白フチで可読性を確保。 */
             .hero-bg-overlay {
-                /* 動画が透けるよう覆いを軽くする（見出しは下の白フチで保護） */
                 background: linear-gradient(
                     180deg,
-                    rgba(249, 248, 246, 0.45) 0%,
+                    rgba(249, 248, 246, 0.72) 0%,   /* 見出し帯：白みを強くして読みやすく */
                     rgba(249, 248, 246, 0.28) 42%,
                     rgba(249, 248, 246, 0.33) 66%,
                     rgba(249, 248, 246, 0.94) 100%
                 );
             }
             .hero-role-block {
-                background: rgba(255, 255, 255, 0.18);
-                border: 1px solid rgba(255, 255, 255, 0.5);
+                background: rgba(255, 255, 255, 0.48); /* 透過を下げてより白く */
+                border: 1px solid rgba(255, 255, 255, 0.6);
                 border-top: 4px solid var(--color-primary);
                 -webkit-backdrop-filter: blur(12px) saturate(1.1);
                 backdrop-filter: blur(12px) saturate(1.1);
@@ -1071,17 +1070,20 @@
             }
             /* すりガラス非対応ブラウザでは白みを足して可読性を確保 */
             @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-                .hero-role-block { background: rgba(255, 255, 255, 0.72); }
+                .hero-role-block { background: rgba(255, 255, 255, 0.85); }
             }
-            /* 動画の上でも文字が読めるよう白フチを強める */
+            /* 見出し（なくよ〜）の白背景を強化 */
             #hero .hero-main-catch {
-                text-shadow: 0 1px 12px rgba(249, 248, 246, 0.98),
-                             0 0 4px rgba(249, 248, 246, 0.95);
+                text-shadow: 0 0 20px rgba(255, 255, 255, 1.0),
+                             0 0 10px rgba(255, 255, 255, 1.0),
+                             0 1px 4px rgba(255, 255, 255, 0.98);
             }
+            /* 箱の中の文字フチを強化 */
             #hero .hero-role-title,
             #hero .hero-role-text {
-                text-shadow: 0 1px 6px rgba(255, 255, 255, 0.95),
-                             0 0 2px rgba(255, 255, 255, 0.9);
+                text-shadow: 0 0 12px rgba(255, 255, 255, 1.0),
+                             0 0 6px rgba(255, 255, 255, 1.0),
+                             0 1px 3px rgba(255, 255, 255, 0.98);
             }
 
             .beginner-box { padding: 28px 20px; }
