@@ -310,7 +310,7 @@
                そこで動画の高さは JS で「約20年に一度の大役」の箱の下端まで
                に合わせ（fitHeroVideo）、上を切って中央の人物が出る位置を表示する。 */
             .hero-bg-video {
-                object-position: 50% 34%;/* 動画位置を上げる（数値を下げると上寄りに） */
+                object-position: 50% 30%;/* 動画位置を上げる（数値を下げると上寄りに） */
             }
             .hero-catch-container {
                 margin: 25px auto 20px;
@@ -1653,26 +1653,45 @@
                 }
             }
 
-            // 0b. Hero内のコンテンツ（見出し・箱）を、動画再生開始まで非表示にして
-            //     動画が映ってから浮かび上がるようにする。
-            //     既存の fade-in/.is-visible の仕組みをそのまま利用する。
+            // 0b. Hero内のコンテンツを、動画が映ってから「順番に」フェードインさせる。
+            //     動画 →(0.5秒)→ キャッチコピー →(1.0秒)→「約20年に一度の大役」の箱、の順。
+            //     箱より下（カウントダウン・動画・ボタン）は箱と一緒に表示し、
+            //     見出しの上に空白が残らないよう上から順に出す。
             const heroContainer = document.querySelector('#hero > .container');
+            const heroCatch     = document.querySelector('#hero .hero-catch-container'); // 『なくよ〜』
+            const heroRoleBoxEl = document.querySelector('#hero .hero-role-block');       // 約20年に一度の大役
+            const heroRest = [
+                document.querySelector('#hero #countdown'),
+                document.querySelector('#hero .video-container'),
+                document.querySelector('#hero .scroll-down-btn')
+            ].filter(Boolean);
+
             if (heroContainer && heroVideo) {
-                // Hero の container だけ observer から外し、動画イベントで制御
-                heroContainer.classList.remove('fade-in'); // observer の監視対象から除外
-                heroContainer.style.opacity = '0';
-                heroContainer.style.transform = 'translateY(16px)';
-                heroContainer.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
+                // コンテナ自体は observer の監視から外し、常に「枠」として表示扱いにする
+                heroContainer.classList.remove('fade-in');
+                heroContainer.style.opacity = '1';
+                heroContainer.style.transform = 'none';
+
+                // 各パーツを最初は隠す（opacityのみ＝レイアウトは動かさず、ちらつき防止）
+                const heroParts = [heroCatch, heroRoleBoxEl, ...heroRest].filter(Boolean);
+                heroParts.forEach(el => {
+                    el.style.opacity = '0';
+                    el.style.transition = 'opacity 0.6s ease-out';
+                });
+
+                function showEl(el) { if (el) el.style.opacity = '1'; }
 
                 let heroRevealed = false;
                 function revealHero() {
                     if (heroRevealed) return;
                     heroRevealed = true;
-                    // 動画が映った直後に文字・箱をフワッと表示
-                    requestAnimationFrame(() => {
-                        heroContainer.style.opacity = '1';
-                        heroContainer.style.transform = 'translateY(0)';
-                    });
+                    // 動画の0.5秒後：キャッチコピー
+                    setTimeout(() => showEl(heroCatch), 500);
+                    // 動画の1.0秒後：「約20年に一度の大役」の箱（＋それ以降の要素）
+                    setTimeout(() => {
+                        showEl(heroRoleBoxEl);
+                        heroRest.forEach(showEl);
+                    }, 1000);
                 }
 
                 // canplay: 動画の最初のフレームが描画可能になった瞬間
