@@ -741,6 +741,9 @@
             }
             .countdown-area {
                 padding: 20px 10px;
+                /* トップ動画とYouTubeが近すぎてチラつくため、カウントダウンを下げて
+                   間隔を確保（YouTubeも一緒に下がる）。空いた上部は背景動画で埋まる。 */
+                margin-top: 72px;
             }
             .countdown-title {
                 font-size: 1.05rem;
@@ -1700,19 +1703,30 @@
                 setTimeout(revealHero, 1200);
             }
 
-            // 0c. スマホでは動画の高さを「約20年に一度の大役」の箱の下端まで伸ばす。
+            // 0c. スマホでは動画の高さを「カウントダウンの直前」まで伸ばす。
+            //     こうすると、カウントダウン／YouTubeを下げても、空いた部分は
+            //     行列の動画で埋まり「間が抜けた空白」にならない。
             //     PC（769px以上）では従来どおりHero全体（CSSの height:100%）に戻す。
             const heroSection = document.getElementById("hero");
             const heroRoleBox = document.querySelector(".hero-role-block");
+            const heroCountdown = document.getElementById("countdown");
             const mqMobile = window.matchMedia("(max-width: 768px)");
 
             function fitHeroVideo() {
-                if (!heroVideo || !heroSection || !heroRoleBox) return;
+                if (!heroVideo || !heroSection) return;
                 if (mqMobile.matches) {
                     const heroTop = heroSection.getBoundingClientRect().top;
-                    const boxBottom = heroRoleBox.getBoundingClientRect().bottom;
-                    const h = Math.round(boxBottom - heroTop);
-                    if (h > 0) heroVideo.style.height = h + "px";
+                    // 基準はカウントダウンの上端。無ければ箱の下端で代用。
+                    let edge = null;
+                    if (heroCountdown) {
+                        edge = heroCountdown.getBoundingClientRect().top - 12; // 直前で少し手前に
+                    } else if (heroRoleBox) {
+                        edge = heroRoleBox.getBoundingClientRect().bottom;
+                    }
+                    if (edge != null) {
+                        const h = Math.round(edge - heroTop);
+                        if (h > 0) heroVideo.style.height = h + "px";
+                    }
                 } else {
                     heroVideo.style.height = "";   // CSSの 100% に戻す
                 }
