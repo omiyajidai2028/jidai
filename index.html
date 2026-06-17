@@ -4,6 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2028年 大宮学区 時代祭 特設サイト</title>
+
+    <!-- ===================================================================
+         アクセス計測（Google Analytics 4 / gtag.js）
+         ▼▼▼ 使い方 ▼▼▼
+         1. https://analytics.google.com/ で無料アカウントとプロパティを作る
+         2. 発行される「測定ID」（G-から始まる文字列）をコピー
+         3. 下の "G-XXXXXXXXXX" を、2か所とも自分の測定IDに置き換える
+            （置き換えるまでは計測は動かないが、ページは普通に表示される）
+    ==================================================================== -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX');
+    </script>
+    <!-- ================= 計測コードここまで ================= -->
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1839,6 +1856,49 @@
                     if (e.key === "Escape") mapModal.classList.remove("open");
                 });
             }
+
+            // 4. 計測（GA4へのイベント送信）
+            //    gtag が無い（測定ID未設定・広告ブロック等）場合は静かに無視する。
+            function track(eventName, params) {
+                if (typeof gtag === "function") {
+                    gtag("event", eventName, params || {});
+                }
+            }
+
+            // 4a. 応募ボタン（Googleフォームへの遷移）のクリックを記録
+            //     → 「見た人のうち何%が申込に進んだか」の最重要指標
+            document.querySelectorAll('a[href*="docs.google.com/forms"]').forEach((a) => {
+                a.addEventListener("click", () => {
+                    const where = a.closest(".bottom-cta") ? "bottom_fixed" : "recruitment";
+                    track("apply_click", { location: where });
+                });
+            });
+
+            // 4b. お問い合わせメールのクリックも記録
+            document.querySelectorAll('a[href^="mailto:"]').forEach((a) => {
+                a.addEventListener("click", () => track("contact_click", {}));
+            });
+
+            // 4c. スクロール到達率（25/50/75/100%）＝どこまで読まれて離脱したか
+            (function () {
+                const marks = [25, 50, 75, 100];
+                const fired = {};
+                function onScroll() {
+                    const doc = document.documentElement;
+                    const scrolled = window.scrollY || doc.scrollTop;
+                    const height = doc.scrollHeight - window.innerHeight;
+                    if (height <= 0) return;
+                    const pct = Math.min(100, Math.round((scrolled / height) * 100));
+                    marks.forEach((m) => {
+                        if (pct >= m && !fired[m]) {
+                            fired[m] = true;
+                            track("scroll_depth", { percent: m });
+                        }
+                    });
+                }
+                window.addEventListener("scroll", onScroll, { passive: true });
+                onScroll();
+            })();
         });
     </script>
 </body>
