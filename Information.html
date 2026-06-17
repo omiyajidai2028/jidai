@@ -692,11 +692,8 @@
         }
 
         .map-modal img {
-            width: auto;
-            height: auto;
             max-width: 100%;
             max-height: 90vh;
-            object-fit: contain;
             border-radius: 6px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.5);
         }
@@ -1174,13 +1171,13 @@
 
     <header>
         <nav class="nav-links">
-            <a href="#hero">トップ</a>
-            <a href="#appeal">参加の魅力</a>
+            <a href="#hero">最初</a>
+            <a href="#appeal">魅力</a>
             <a href="#recruitment">募集</a>
             <a href="#history">歴史</a>
             <a href="#procession">行列</a>
             <a href="#schedule">予定</a>
-            <a href="#organization">連絡先</a>
+            <a href="#organization">連絡</a>
         </nav>
     </header>
 
@@ -1227,7 +1224,7 @@
             </div>
 
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/0mUEP6J-320" title="時代祭動画" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <iframe src="https://www.youtube.com/embed/0mUEP6J-320" title="時代祭動画" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
             
             <div>
@@ -1421,7 +1418,7 @@
             </div>
 
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/0_6Xn8NnbQQ" title="延暦文官参朝列" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <iframe src="https://www.youtube.com/embed/0_6Xn8NnbQQ" title="延暦文官参朝列" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
         </div>
     </section>
@@ -1440,13 +1437,13 @@
 
             <div class="procession-image-block">
                 <div class="procession-image-label">前列構成 ——— 社旗・供奉長・舎人・三位（浅紫）・蓋・馬杓持・儀戈持・召具</div>
-                <img src="retu1.jpg" alt="延暦文官参朝列 前列構成図（社旗から召具まで）" loading="lazy" decoding="async" width="1101" height="315">
+                <img src="retu1.jpg" alt="延暦文官参朝列 前列構成図（社旗から召具まで）">
                 <p class="procession-caption">先頭から：社旗 → 供奉長（延暦文官参朝列） → 舎人 → 三位（浅紫・乗馬） → 蓋 → 馬杓持 → 儀戈持 → 召具</p>
             </div>
 
             <div class="procession-image-block">
                 <div class="procession-image-label">後列構成 ——— 四位・五位・六位（各々召具を従えて）</div>
-                <img src="retu2.jpg" alt="延暦文官参朝列 後列構成図（四位・五位・六位）" loading="lazy" decoding="async" width="1241" height="316">
+                <img src="retu2.jpg" alt="延暦文官参朝列 後列構成図（四位・五位・六位）">
                 <p class="procession-caption">四位（深緋）→ 五位（浅緋）→ 六位（深緑）の順。各役人はそれぞれ召具（従者）2名を従えて行進します。</p>
             </div>
 
@@ -1469,7 +1466,7 @@
             <!-- 行列コース地図 -->
             <div class="course-map-block">
                 <h3 style="font-family: var(--font-serif); font-size: 1.3rem; color: var(--color-primary); margin-bottom: 16px;">🗺 行列コース（当日ルート）</h3>
-                <img src="course.jpg" alt="時代祭 行列コース地図" id="courseMapImg" title="クリックで拡大" loading="lazy" decoding="async" width="1343" height="945">
+                <img src="course.jpg" alt="時代祭 行列コース地図" id="courseMapImg" title="クリックで拡大">
                 <div class="course-map-caption">
                     <strong>出発 12:00</strong> 京都御所（堺町御門 12:15）→ 丸太町通 → 烏丸御池（12:50）→ 御池通 → 河原町御池 → 木屋町通（13:30）→ 三条通（三条大橋 13:40）→ 三条神宮道（14:10）→ 仁王門通（14:20）→ <strong>到着 14:30</strong> 平安神宮（応天門）<br>
                     <span style="font-size: 0.85rem; color: #666; margin-top: 6px; display: block;">※行列通過所要時間：約2時間 ／ 地図をクリックすると拡大表示されます</span>
@@ -1611,7 +1608,7 @@
     <!-- 地図拡大モーダル -->
     <div class="map-modal" id="mapModal">
         <button class="map-modal-close" id="mapModalClose" aria-label="閉じる">&times;</button>
-        <img src="course.jpg" alt="行列コース地図（拡大）" loading="lazy" decoding="async" width="1343" height="945">
+        <img src="course.jpg" alt="行列コース地図（拡大）">
     </div>
 
     <script>
@@ -1680,14 +1677,35 @@
                 document.fonts.ready.then(fitHeroVideo);
             }
             window.addEventListener("load", fitHeroVideo);
-            window.addEventListener("resize", fitHeroVideo);
+            // リサイズは連続発火するので、止まった瞬間に1回だけ計算（デバウンス）
+            let fitResizeTimer = null;
+            window.addEventListener("resize", () => {
+                clearTimeout(fitResizeTimer);
+                fitResizeTimer = setTimeout(fitHeroVideo, 150);
+            });
+            // 画面回転は即時に合わせ直す
             window.addEventListener("orientationchange", fitHeroVideo);
+
+            // 「最初」リンクは常にページ最上部（座標0）へ確実に戻す
+            const topLink = document.querySelector('.nav-links a[href="#hero"]');
+            if (topLink) {
+                topLink.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                });
+            }
 
             // 1. カウントダウンタイマー機能
             const targetDate = new Date("2028-10-22T00:00:00+09:00").getTime();
+            let timerInterval = null;   // 先に宣言して当日処理での参照エラーを防ぐ
 
             function padNum(num, len) {
                 return ('000' + num).slice(-len);
+            }
+
+            function setCountText(id, value) {
+                const el = document.getElementById(id);
+                if (el) el.textContent = value;   // 要素が無くても止まらない
             }
 
             function updateCountdown() {
@@ -1700,7 +1718,7 @@
                     if (countdownArea) {
                         countdownArea.innerHTML = "<div class='countdown-title' style='font-size:1.3rem; color:var(--color-primary);'>時代祭 当日です</div>";
                     }
-                    if (typeof timerInterval !== 'undefined') clearInterval(timerInterval);
+                    if (timerInterval) clearInterval(timerInterval);
                     return;
                 }
 
@@ -1709,14 +1727,14 @@
                 const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-                document.getElementById("days").textContent = padNum(days, 3);
-                document.getElementById("hours").textContent = padNum(hours, 2);
-                document.getElementById("minutes").textContent = padNum(minutes, 2);
-                document.getElementById("seconds").textContent = padNum(seconds, 2);
+                setCountText("days", padNum(days, 3));
+                setCountText("hours", padNum(hours, 2));
+                setCountText("minutes", padNum(minutes, 2));
+                setCountText("seconds", padNum(seconds, 2));
             }
 
             updateCountdown();
-            const timerInterval = setInterval(updateCountdown, 1000);
+            timerInterval = setInterval(updateCountdown, 1000);
 
             // 2. フェードイン用アニメーション
             const observerOptions = {
