@@ -1,0 +1,1845 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2028年 大宮学区 時代祭 特設サイト</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           基本設定・変数
+        ========================================= */
+        :root {
+            --color-bg: #F9F8F6;
+            --color-text: #2C2C2C;
+            --color-text-light: #555555;
+            --color-primary: #005931;
+            --color-primary-dark: #003d22;
+            --color-accent: #8A6B4E;
+            --color-timer-bg: #F0EDE6;
+            --font-serif: 'Noto Serif JP', serif;
+            --font-sans: 'Noto Sans JP', sans-serif;
+            --font-number: 'Courier Prime', monospace;
+            --header-height: 60px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* 横方向のはみ出し対策（全要素 border-box＋ページ横スクロール禁止） */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            padding-top: var(--header-height);
+            padding-bottom: 80px;
+            background-color: var(--color-bg);
+            color: #1A1A1A;
+            font-family: var(--font-sans);
+            font-size: 16px;
+            line-height: 1.8;
+            letter-spacing: 0.05em;
+            font-feature-settings: "palt";
+        }
+
+        h1, h2, h3, h4 {
+            font-family: var(--font-serif);
+            line-height: 1.4;
+            margin-top: 0;
+        }
+
+        a {
+            color: var(--color-primary);
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        a:hover {
+            opacity: 0.7;
+        }
+
+        /* =========================================
+           レイアウト・共通パーツ
+        ========================================= */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            color: var(--color-primary);
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 2px;
+            background-color: var(--color-accent);
+            margin: 16px auto 0;
+        }
+
+        section {
+            scroll-margin-top: var(--header-height);
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin: 40px 0;
+            background-color: #000;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* =========================================
+           ヘッダー（上部固定）
+        ========================================= */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--header-height);
+            background-color: var(--color-primary); /* 濃緑に変更し存在感を出す */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2); /* 影を濃くして浮遊感を強調 */
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            font-size: 0.95rem;
+            font-weight: 700; /* 太字にして視認性を上げる */
+        }
+
+        .nav-links a {
+            color: #FFFFFF; /* 背景の濃緑に対して白文字でコントラストを最大化 */
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.15); /* ホバー時は薄く白を乗せる */
+            opacity: 1;
+        }
+
+        /* =========================================
+           Hero セクション（トップ）
+        ========================================= */
+        #hero {
+            position: relative;          /* 背景動画の基準 */
+            overflow: hidden;            /* はみ出した動画を切り取る */
+            isolation: isolate;          /* 重ね順を局所化 */
+            padding: 80px 20px 60px;
+            text-align: center;
+            /* 動画が読み込めない場合のフォールバック背景 */
+            background: linear-gradient(180deg, #FFFFFF 0%, var(--color-bg) 100%);
+        }
+
+        /* 背景で流れる動画（音声なし） */
+        .hero-bg-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;           /* 縦動画を全面に敷き、はみ出し部分は切り取る */
+            object-position: center;
+            z-index: 0;
+            pointer-events: none;        /* リンク等の操作を妨げない */
+            user-select: none;
+        }
+
+        /* 文字を読みやすくするための覆い（クリーム色の半透明） */
+        .hero-bg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            /* 上部（見出し付近）を濃いめにして可読性を確保し、
+               下部はページ背景色に馴染ませて次のセクションへ自然に繋ぐ */
+            background: linear-gradient(
+                180deg,
+                rgba(249, 248, 246, 0.80) 0%,
+                rgba(249, 248, 246, 0.66) 35%,
+                rgba(249, 248, 246, 0.74) 68%,
+                rgba(249, 248, 246, 0.96) 100%
+            );
+        }
+
+        /* Hero内のコンテンツは覆いより前面に */
+        #hero > .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 動画の上でも文字がにじまないよう、淡い白フチを足して輪郭を補強 */
+        #hero .hero-main-catch,
+        #hero .hero-role-title,
+        #hero .hero-role-text {
+            text-shadow: 0 1px 8px rgba(249, 248, 246, 0.9),
+                         0 0 2px rgba(249, 248, 246, 0.85);
+        }
+
+        /* 動きを抑える設定の利用者には動画を出さず、静かな背景にする */
+        @media (prefers-reduced-motion: reduce) {
+            .hero-bg-video {
+                display: none;
+            }
+            .hero-bg-overlay {
+                background: var(--color-bg);
+            }
+        }
+
+        /* =========================================
+           メインキャッチコピー（強さと優しさの両立）
+        ========================================= */
+        .hero-catch-container {
+            text-align: center;
+            margin: 40px auto 30px;
+            padding: 0 20px;
+            max-width: 800px;
+        }
+
+        /* 導入としての優しい一言 */
+        .hero-sub-catch {
+            font-family: var(--font-serif);
+            font-size: 1.15rem;
+            color: var(--color-accent); /* 伝統的な金茶色で柔らかく開始 */
+            letter-spacing: 0.2em;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        /* メインキャッチ全体 */
+        .hero-main-catch {
+            font-family: var(--font-serif);
+            font-size: clamp(2rem, 5vw, 3.2rem); /* 画面幅に応じてダイナミックに可変 */
+            line-height: 1.6;
+            color: var(--color-primary-dark); /* 深い緑で重厚感と高い視認性 */
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        /* 各要素をブロック化してリズムを作る */
+        .hero-main-catch .year {
+            display: block;
+            font-size: 0.75em;
+            color: var(--color-accent);
+            margin-bottom: 4px;
+        }
+
+        .hero-main-catch .phrase {
+            display: block;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+
+        /* ルビのような補足（小さくして視覚的なノイズを減らす） */
+        .hero-main-catch .phrase .kana {
+            font-size: 0.7em;
+            font-weight: 500;
+            opacity: 0.85;
+        }
+
+        /* 最も押し出したい「大宮学区にやってくる。」 */
+        .hero-main-catch .highlight {
+            display: inline-block;
+            position: relative;
+            font-size: 1.15em; /* 一回り大きくして強烈に主張 */
+            color: #A42525; /* 威圧感のない、温かみと格式のある伝統的な「朱・紅」 */
+            padding: 0 8px;
+            font-weight: 700;
+        }
+
+        /* 優しさを担保する、和風の柔らかなアンダーライン（文字の背後に配置） */
+        .hero-main-catch .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 6px;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: rgba(138, 107, 78, 0.2); /* アクセントカラーを薄く敷いて文字の輪郭を守る */
+            border-radius: 4px;
+            z-index: -1;
+        }
+
+        /* =========================================
+           レスポンシブ（スマホ表示時の微調整）
+        ========================================= */
+        @media (max-width: 768px) {
+            /* スマホでは縦長になり、動画全体を敷くと「上の方（空・建物）」が
+               見出しの裏に来て人物が下のカードに隠れてしまう。
+               そこで動画の高さは JS で「約20年に一度の大役」の箱の下端まで
+               に合わせ（fitHeroVideo）、上を切って中央の人物が出る位置を表示する。 */
+            .hero-bg-video {
+                object-position: 50% 30%;/* 動画位置を上げる（数値を下げると上寄りに） */
+            }
+            .hero-catch-container {
+                margin: 25px auto 20px;
+            }
+            .hero-sub-catch {
+                font-size: 0.95rem;
+                letter-spacing: 0.15em;
+            }
+            .hero-main-catch {
+                font-size: clamp(1.5rem, 6vw, 2.2rem);
+                line-height: 1.5;
+            }
+            .hero-main-catch .highlight {
+                display: block; /* スマホでは折り返して単体で目立たせる */
+                margin-top: 5px;
+            }
+            .hero-main-catch .highlight::after {
+                bottom: 2px;
+                height: 8px;
+            }
+        }
+
+        .hero-lead {
+            font-size: 1.1rem;
+            color: #333333; /* より濃くして可読性を担保 */
+            font-weight: 500;
+            margin-bottom: 40px;
+            text-shadow: 0 1px 1px rgba(255,255,255,0.8); /* 背景に溶けないよう白フチ効果 */
+        }
+
+        /* カウントダウンタイマーのデザイン */
+        .countdown-area {
+            max-width: 600px;
+            margin: 0 auto 40px;
+            padding: 28px 20px;
+            background-color: var(--color-primary-dark); /* サイトの濃緑（ヘッダー・ボタンと同系）に統一 */
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            border: 2px solid var(--color-accent); /* アクセントカラー（茶色）で堅牢な縁取り */
+        }
+
+        .countdown-title {
+            font-family: var(--font-serif);
+            font-size: 1.25rem;
+            font-weight: 700; /* 900から700へ落とし、少し落ち着かせる */
+            text-align: center;
+            margin-bottom: 20px;
+            letter-spacing: 0.15em;
+            color: #ffffff; /* 発光をやめ、純白にする */
+            
+            /* 黒背景に対して文字をくっきりと浮かび上がらせるための影 */
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
+        }
+
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            align-items: baseline;
+            gap: 12px;
+        }
+
+        .timer-unit {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+
+        .timer-num {
+            display: inline-block;
+            font-family: var(--font-number);
+            font-size: 2.5rem; /* サイズを大きくして迫力を出す */
+            font-size: clamp(2.5rem, 6vw, 3.5rem);
+            font-weight: 700;
+            color: #1A1A1A;
+            background: linear-gradient(135deg, #FFFFFF 0%, #EBE8E0 100%); /* 立体的な硬質プレート風 */
+            padding: 10px 16px;
+            border-radius: 6px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4), inset 0 1px 0 #FFF;
+            min-width: 1.2em;
+            text-align: center;
+            line-height: 1;
+        }
+
+        .timer-label {
+            font-family: var(--font-serif);
+            font-size: 1.35rem; /* 主張するサイズは維持 */
+            font-weight: 900;
+            
+            /* 純粋な「輝く銀」のメタリックグラデーション */
+            background: linear-gradient(
+                to bottom,
+                #FFFFFF 0%,     /* 上部：白く強い光の反射 */
+                #DCE1E9 30%,    /* 上半分：明るい純銀 */
+                #858F9E 48%,    /* 中央上：鋭利なハイライト */
+                #4A5568 52%,    /* 中央下：金属特有の深い影（ここで立体感を出す） */
+                #A0ABC0 75%,    /* 下半分：落ち着いた銀 */
+                #F0F4F8 100%    /* 下端：照り返し */
+            );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: #A0ABC0;
+
+            /* 冷たく鋭い光と、文字を際立たせる濃い影 */
+            filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.5)) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.9));
+            
+            letter-spacing: 0.05em;
+        }
+
+        /* =========================================
+           募集要項セクション
+        ========================================= */
+        #recruitment {
+            background-color: #fff;
+            padding: 80px 20px;
+            border-top: 1px solid #EBE8E0;
+            border-bottom: 1px solid #EBE8E0;
+        }
+
+        .role-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .role-card {
+            background-color: var(--color-bg);
+            padding: 32px;
+            border-radius: 8px;
+            border-top: 4px solid var(--color-primary);
+        }
+
+        .role-card h3 {
+            font-size: 1.4rem;
+            color: var(--color-primary);
+            border-bottom: 1px solid #EBE8E0;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+
+        .role-card ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .role-card li {
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--color-primary);
+            color: #fff !important;
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 20px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 89, 49, 0.3);
+            transition: all 0.3s ease;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 89, 49, 0.4);
+        }
+
+        /* =========================================
+           その他のセクション
+        ========================================= */
+        .news-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .news-item {
+            display: flex;
+            padding: 20px 0;
+            border-bottom: 1px solid #EBE8E0;
+        }
+
+        .news-date {
+            font-weight: 700;
+            color: var(--color-accent);
+            width: 140px;
+            flex-shrink: 0;
+        }
+
+        .news-text {
+            flex-grow: 1;
+        }
+
+        .content-block {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            margin-bottom: 30px;
+        }
+
+        .content-block h3 {
+            font-size: 1.4rem;
+            margin-bottom: 16px;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+
+        .schedule-table th, 
+        .schedule-table td {
+            padding: 16px;
+            border-bottom: 1px solid #EBE8E0;
+            text-align: left;
+        }
+
+        .schedule-table th {
+            width: 120px;
+            color: var(--color-accent);
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .contact-box {
+            text-align: center;
+        }
+
+        .contact-email {
+            display: inline-block;
+            max-width: 100%;            /* 画面幅を超えない */
+            margin-top: 20px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            background: #fff;
+            padding: 15px 30px;
+            border-radius: 40px;
+            border: 2px solid var(--color-primary);
+            word-break: break-all;      /* 長いメールアドレスを折り返す */
+        }
+
+        /* 下部追従型ボタン */
+        .bottom-cta {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+            padding: 15px 20px;
+            box-sizing: border-box;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+        }
+
+        .bottom-cta a {
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            background-color: var(--color-primary);
+            color: #fff;
+            text-align: center;
+            padding: 14px 0;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 10px rgba(0, 89, 49, 0.2);
+        }
+
+        /* アニメーション用 */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .fade-in.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* =========================================
+           延暦文官参朝列 図解セクション
+        ========================================= */
+        .procession-section {
+            background-color: #f5f2ec;
+            border-top: 1px solid #EBE8E0;
+            border-bottom: 1px solid #EBE8E0;
+        }
+
+        .procession-intro {
+            text-align: center;
+            color: var(--color-text-light);
+            margin-bottom: 32px;
+            font-size: 1rem;
+        }
+
+        .procession-image-block {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            padding: 20px 12px 16px;
+            margin-bottom: 20px;
+        }
+
+        .procession-image-label {
+            font-family: var(--font-serif);
+            font-size: 0.85rem;
+            color: var(--color-accent);
+            letter-spacing: 0.12em;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .procession-image-block img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 6px;
+        }
+
+        .procession-caption {
+            font-size: 0.82rem;
+            color: var(--color-text-light);
+            text-align: center;
+            margin-top: 10px;
+            line-height: 1.6;
+        }
+
+        /* =========================================
+           行列コース（地図）セクション
+        ========================================= */
+        .course-map-block {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            padding: 24px 16px 20px;
+            margin-bottom: 30px;
+        }
+
+        .course-map-block img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 6px;
+            cursor: zoom-in;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .course-map-block img:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .course-map-caption {
+            margin-top: 14px;
+            font-size: 0.88rem;
+            color: var(--color-text-light);
+            line-height: 1.7;
+        }
+
+        .course-map-caption strong {
+            color: var(--color-primary);
+        }
+
+        /* 地図ズームモーダル */
+        .map-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 9000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .map-modal.open {
+            display: flex;
+        }
+
+        .map-modal img {
+            max-width: 100%;
+            max-height: 90vh;
+            border-radius: 6px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+
+        .map-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            color: #fff;
+            font-size: 2rem;
+            cursor: pointer;
+            line-height: 1;
+            background: none;
+            border: none;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 60px 20px; }
+            .news-item { flex-direction: column; }
+            .news-date { margin-bottom: 8px; }
+            .content-block { padding: 24px; }
+            .schedule-table th, .schedule-table td { padding: 12px 8px; }
+            .schedule-table th { width: 90px; }
+            .contact-email { font-size: 1.2rem; padding: 12px 20px; }
+            .procession-image-block { padding: 14px 8px 12px; }
+            .course-map-block { padding: 16px 10px 14px; }
+            .nav-links {
+                gap: 8px;
+                font-size: 0.75rem;
+            }
+            .nav-links a {
+                padding: 6px 4px;
+            }
+            .countdown-area {
+                padding: 20px 10px;
+                /* 映像が箱の足元から溶けて消えた直後（クリーム背景の上）に着地させる。
+                   溶けしろ MELT(JS=90px) ＋ 少しの余白。YouTubeも一緒に下がる。 */
+                margin-top: 108px;
+            }
+            .countdown-title {
+                font-size: 1.05rem;
+                margin-bottom: 15px;
+            }
+            .countdown-timer {
+                gap: 6px; /* 要素同士の間隔を12pxから縮小 */
+            }
+            .timer-unit {
+                gap: 2px; /* 数字と単位の間隔を4pxから縮小 */
+            }
+            .timer-num {
+                padding: 4px 6px; /* 数字周りの余白を縮小 */
+                font-size: clamp(1.2rem, 5vw, 1.8rem); /* 画面幅に応じて文字サイズを可変にする */
+                min-width: 1em; /* 最小幅を調整 */
+            }
+            .timer-label {
+                font-size: 1.05rem; /* スマホ表示でも存在感を損なわないサイズ */
+            }
+
+        }
+
+        /* =========================================
+           追加：読みやすさの底上げ（高齢の方・スマホ閲覧を考慮）
+        ========================================= */
+        body { font-size: 17px; }
+
+        /* カウントダウンの単位ラベルを、輝度の強い金属調から
+           落ち着いた可読性重視のクリーム色へ（情報過多・派手さの抑制） */
+        .timer-label {
+            background: none;
+            -webkit-text-fill-color: #EFE8D8;
+            color: #EFE8D8;
+            filter: none;
+            font-weight: 700;
+        }
+
+        /* =========================================
+           追加：ヒーロー内「約20年に一度の大役」案内ブロック
+        ========================================= */
+        .hero-role-block {
+            max-width: 640px;
+            margin: 28px auto 36px;
+            padding: 30px 30px 26px;
+            background: #FFFFFF;
+            border: 1px solid #E4DFD4;
+            border-top: 4px solid var(--color-primary);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            text-align: center;
+        }
+        .hero-role-title {
+            font-family: var(--font-serif);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin: 0 0 18px;
+            letter-spacing: 0.08em;
+        }
+        .hero-role-text {
+            font-size: 1.08rem;
+            line-height: 1.95;
+            color: #2A2A2A;
+            margin: 0 0 16px;
+        }
+        .hero-role-text:last-of-type { margin-bottom: 24px; }
+        .hero-role-text strong { color: var(--color-primary-dark); font-weight: 700; }
+
+        /* 募集中バッジ（煽らない、落ち着いた表現） */
+        .recruit-badges {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 4px;
+        }
+        .recruit-badge {
+            display: inline-block;
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 9px 20px;
+            border-radius: 999px;
+            background: var(--color-primary);
+            color: #FFFFFF;
+            letter-spacing: 0.04em;
+        }
+        .recruit-badge--sub {
+            background: #FFFFFF;
+            color: var(--color-primary);
+            border: 1.5px solid var(--color-primary);
+        }
+
+        /* =========================================
+           追加：参加する魅力セクション
+        ========================================= */
+        #appeal { background-color: var(--color-bg); }
+        .appeal-lead {
+            text-align: center;
+            font-size: 1.1rem;
+            line-height: 1.95;
+            color: #333;
+            margin-bottom: 44px;
+        }
+        .appeal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin-bottom: 8px;
+        }
+        .appeal-card {
+            background: #FFFFFF;
+            border: 1px solid #E8E3D9;
+            border-top: 3px solid var(--color-accent);
+            border-radius: 10px;
+            padding: 28px 26px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        .appeal-card h3 {
+            font-size: 1.2rem;
+            color: var(--color-primary);
+            margin: 0 0 12px;
+            line-height: 1.55;
+        }
+        .appeal-card p {
+            font-size: 1.02rem;
+            line-height: 1.85;
+            color: #3A3A3A;
+            margin: 0;
+        }
+
+        /* =========================================
+           追加：初めての方も歓迎セクション
+        ========================================= */
+        #beginner {
+            background-color: #fff;
+            border-top: 1px solid #EBE8E0;
+            border-bottom: 1px solid #EBE8E0;
+        }
+        .beginner-box {
+            max-width: 700px;
+            margin: 0 auto;
+            background: var(--color-bg);
+            border-radius: 12px;
+            padding: 38px 34px;
+            border-left: 5px solid var(--color-accent);
+        }
+        .beginner-box h3 {
+            font-size: 1.35rem;
+            color: var(--color-primary);
+            margin: 0 0 8px;
+            line-height: 1.5;
+        }
+        .beginner-box .beginner-sub {
+            font-size: 1.02rem;
+            color: #444;
+            margin: 0 0 26px;
+        }
+        .beginner-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .beginner-list li {
+            position: relative;
+            padding: 16px 0 16px 42px;
+            border-bottom: 1px dashed #DAD3C6;
+            font-size: 1.06rem;
+            line-height: 1.75;
+            color: #2A2A2A;
+        }
+        .beginner-list li:last-child { border-bottom: none; }
+        .beginner-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 8px;
+            top: 15px;
+            color: var(--color-primary);
+            font-weight: 700;
+            font-size: 1.25rem;
+            line-height: 1;
+        }
+        .beginner-list li strong { color: var(--color-primary-dark); }
+
+        /* =========================================
+           追加：写真エリア（後日写真追加予定のプレースホルダ）
+        ========================================= */
+        .photo-frame { margin: 32px 0 8px; }
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+        }
+        .photo-placeholder {
+            background: repeating-linear-gradient(45deg,
+                #F4F1EA, #F4F1EA 14px, #EFEBE1 14px, #EFEBE1 28px);
+            border: 1px solid #E2DCCF;
+            border-radius: 10px;
+            min-height: 200px;
+            aspect-ratio: 3 / 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 24px;
+            gap: 8px;
+        }
+        .photo-placeholder .ph-label {
+            font-family: var(--font-serif);
+            font-size: 1.08rem;
+            font-weight: 700;
+            color: #7E7259;
+            letter-spacing: 0.06em;
+        }
+        .photo-placeholder .ph-note {
+            font-size: 0.85rem;
+            color: #A99E86;
+        }
+        .photo-frame .photo-caption {
+            text-align: center;
+            font-size: 0.92rem;
+            color: var(--color-text-light);
+            margin-top: 12px;
+        }
+
+        /* =========================================
+           追加：募集要項の補助表現（役割の整理）
+        ========================================= */
+        .sub-heading {
+            font-family: var(--font-serif);
+            font-size: 1.3rem;
+            color: var(--color-primary);
+            border-left: 4px solid var(--color-accent);
+            padding-left: 14px;
+            margin: 8px 0 22px;
+            line-height: 1.5;
+        }
+        .role-list-clean { list-style: none; padding: 0; margin: 0; }
+        .role-list-clean li {
+            padding: 14px 0;
+            border-bottom: 1px solid #EBE8E0;
+            line-height: 1.7;
+        }
+        .role-list-clean li:last-child { border-bottom: none; }
+        .role-list-clean .role-name {
+            display: block;
+            font-weight: 700;
+            color: var(--color-primary-dark);
+            margin-bottom: 3px;
+            font-size: 1.05rem;
+        }
+        .role-list-clean .role-desc { font-size: 0.98rem; color: #444; }
+        .role-tags { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 8px; }
+        .role-tag {
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 5px 13px;
+            border-radius: 999px;
+            letter-spacing: 0.03em;
+        }
+        .role-tag--day { background: #E1ECE5; color: #2F5B43; }
+        .role-tag--prep { background: #EDE7DC; color: #6E5B43; }
+        .role-fit {
+            margin-top: 18px;
+            padding-top: 16px;
+            border-top: 1px solid #E8E3D9;
+            font-size: 0.98rem;
+            color: #4A4A4A;
+            line-height: 1.75;
+        }
+        .role-fit strong { color: var(--color-primary); }
+
+        /* =========================================
+           追加：セクション補足文・橋渡し・控えめな導線
+        ========================================= */
+        .section-note {
+            text-align: center;
+            font-size: 1.08rem;
+            line-height: 1.95;
+            color: #3A3A3A;
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+        .soft-cta { text-align: center; margin: 32px 0 0; }
+        .soft-cta a {
+            display: inline-block;
+            font-weight: 700;
+            color: var(--color-primary);
+            font-size: 1.06rem;
+            border-bottom: 2px solid var(--color-accent);
+            padding-bottom: 3px;
+        }
+
+        /* ヒーロー下部「参加について見る」リンク（明るい背景＋押しやすい余白） */
+        .scroll-down-btn {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 13px 32px;
+            font-family: var(--font-serif);
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            color: var(--color-primary);
+            background: #FFFFFF;
+            border: 1.5px solid var(--color-primary);
+            border-radius: 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+        .scroll-down-btn:hover { background: var(--color-primary); color: #FFFFFF; }
+
+        /* スマホ調整（追加分） */
+        @media (max-width: 768px) {
+            .hero-role-block { padding: 24px 18px 22px; margin: 22px auto 30px; }
+            .hero-role-title { font-size: 1.22rem; }
+            .hero-role-text { font-size: 1.02rem; }
+            .recruit-badge { font-size: 0.95rem; padding: 8px 16px; }
+
+            /* 「約20年に一度の大役」の箱を半透明（すりガラス風）にして、
+               箱の下端まで動画が透けて見えるようにする。
+               文字はぼかし＋白フチで可読性を確保。 */
+            .hero-bg-overlay {
+                background: linear-gradient(
+                    180deg,
+                    rgba(249, 248, 246, 0.72) 0%,   /* 見出し帯：白みを強くして読みやすく */
+                    rgba(249, 248, 246, 0.28) 42%,
+                    rgba(249, 248, 246, 0.33) 66%,
+                    rgba(249, 248, 246, 0.94) 100%
+                );
+            }
+            .hero-role-block {
+                background: rgba(255, 255, 255, 0.66); /* 透過をさらに下げてより白く（可読性アップ） */
+                border: 1px solid rgba(255, 255, 255, 0.7);
+                border-top: 4px solid var(--color-primary);
+                -webkit-backdrop-filter: blur(12px) saturate(1.1);
+                backdrop-filter: blur(12px) saturate(1.1);
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+            }
+            /* すりガラス非対応ブラウザでは白みを足して可読性を確保 */
+            @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+                .hero-role-block { background: rgba(255, 255, 255, 0.92); }
+            }
+            /* 見出し（なくよ〜）の白背景を強化 */
+            #hero .hero-main-catch {
+                text-shadow: 0 0 34px rgba(255, 255, 255, 1.0),
+                             0 0 22px rgba(255, 255, 255, 1.0),
+                             0 0 14px rgba(255, 255, 255, 1.0),
+                             0 0 7px  rgba(255, 255, 255, 1.0),
+                             0 1px 4px rgba(255, 255, 255, 0.98);
+            }
+            /* 箱の中の文字フチを強化 */
+            #hero .hero-role-title,
+            #hero .hero-role-text {
+                text-shadow: 0 0 18px rgba(255, 255, 255, 1.0),
+                             0 0 10px rgba(255, 255, 255, 1.0),
+                             0 0 5px rgba(255, 255, 255, 1.0),
+                             0 1px 3px rgba(255, 255, 255, 0.98);
+            }
+
+            .beginner-box { padding: 28px 20px; }
+            .beginner-box h3 { font-size: 1.2rem; }
+            .beginner-list li { font-size: 1.02rem; padding-left: 36px; }
+            .appeal-card { padding: 22px 20px; }
+            .sub-heading { font-size: 1.15rem; }
+        }
+
+        /* =========================================
+           最終調整：スマホ／PCの視認性向上（既存デザインは維持）
+           - トップの上部余白を引き締め、キャッチを一回り大きく
+           - 見出し・本文の改行バランスを最適化（対応ブラウザのみ自動適用）
+        ========================================= */
+        h1, h2, h3, h4 { text-wrap: balance; }
+        p { text-wrap: pretty; }
+
+        @media (max-width: 768px) {
+            /* トップ：頭上の余白を詰めて「間延び」を解消 */
+            #hero {
+                padding-top: 34px;
+                padding-bottom: 48px;
+            }
+            .hero-catch-container {
+                margin-top: 12px;
+                margin-bottom: 22px;
+            }
+
+            /* メインキャッチを一回り大きく・力強く（min/可変幅/maxを引き上げ） */
+            .hero-main-catch {
+                font-size: clamp(1.65rem, 7vw, 2.35rem);
+                line-height: 1.5;
+            }
+            /* 「なくよ(794)ウグイス平安京」が小さく見えないよう拡大 */
+            .hero-main-catch .phrase {
+                font-size: 0.95em;
+                margin-bottom: 10px;
+            }
+            .hero-main-catch .highlight {
+                font-size: 1.12em;
+            }
+        }
+
+        /* =========================================
+           追加(B選択)：補足テキストの底上げ ＋ スマホ操作性
+           ― 既存デザインは維持／末尾追記で上書き
+        ========================================= */
+        /* --- A：薄い・小さい補足テキストの可読性を確保（色とサイズのみ） --- */
+        .procession-image-label     { font-size: 0.9rem; }
+        .procession-caption         { font-size: 0.9rem; }
+        .course-map-caption         { font-size: 0.92rem; }
+        .photo-frame .photo-caption { font-size: 0.94rem; }
+        .role-tag                   { font-size: 0.88rem; }
+        .photo-placeholder .ph-note { color: #6B6150; }   /* 薄すぎる注記を可読な濃さへ */
+
+        /* --- B：スマホのヘッダーナビを「押しやすく・読みやすく」 --- */
+        @media (max-width: 768px) {
+            .nav-links {
+                width: max-content;          /* 収まる端末では従来どおり中央表示 */
+                max-width: 100%;
+                margin: 0 auto;
+                justify-content: flex-start;
+                flex-wrap: nowrap;
+                gap: 2px;
+                font-size: 0.85rem;          /* 文字を拡大（0.75 → 0.85rem） */
+                overflow-x: auto;            /* 入りきらない端末は横スワイプで全項目に到達 */
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;       /* 細いスクロールバーは隠す */
+                padding: 0 6px;
+                box-sizing: border-box;
+            }
+            .nav-links::-webkit-scrollbar { display: none; }
+            .nav-links a {
+                flex: 0 0 auto;
+                padding: 13px 11px;          /* タップ範囲を拡大（高さ約42px・指で押しやすく） */
+                white-space: nowrap;
+                border-radius: 6px;
+            }
+        }
+
+        /* 幅360px級の極小端末（Oppo Reno 13a 等）でも1行に収める */
+        @media (max-width: 374px) {
+            .nav-links {
+                gap: 0;
+                font-size: 0.8rem;
+                padding: 0 2px;
+            }
+            .nav-links a {
+                padding: 13px 7px;
+            }
+            .contact-email {
+                font-size: 1.05rem;
+                padding: 12px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav class="nav-links">
+            <a href="#hero">最初</a>
+            <a href="#appeal">魅力</a>
+            <a href="#recruitment">募集</a>
+            <a href="#history">歴史</a>
+            <a href="#procession">行列</a>
+            <a href="#schedule">予定</a>
+            <a href="#organization">連絡</a>
+        </nav>
+    </header>
+
+    <section id="hero">
+        <!-- 背景動画（音声なし・自動再生・ループ）。ファイルは同じフォルダの top.mp4 を参照 -->
+        <video class="hero-bg-video" autoplay muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1">
+            <source src="top.mp4" type="video/mp4">
+        </video>
+        <!-- 文字を読みやすくするための覆い -->
+        <div class="hero-bg-overlay" aria-hidden="true"></div>
+
+        <div class="container fade-in" style="padding-top: 0;">
+            <div class="hero-catch-container">
+                <h1 class="hero-main-catch">
+                    <span class="phrase">『なくよ <span class="kana">(794)</span> ウグイス平安京』が</span>
+                    <span class="highlight">大宮学区にやってくる。</span>
+                </h1>
+            </div>
+            <div class="hero-role-block">
+                <p class="hero-role-title">約20年に一度の大役</p>
+                <p class="hero-role-text">
+                    2028年、大宮学区は時代祭<br>
+                    <strong>「延暦文官参朝列」</strong>を担当します。
+                </p>
+                <p class="hero-role-text">
+                    この役目が巡ってくるのは、約20年に一度。<br>
+                    地域の皆さまとともに、大宮学区の<br>
+                    歴史の1ページを担う貴重な機会です。
+                </p>
+                <div class="recruit-badges">
+                    <span class="recruit-badge">行列参加者 募集中</span>
+                    <span class="recruit-badge recruit-badge--sub">ボランティア 募集中</span>
+                </div>
+            </div>
+            
+            <div id="countdown" class="countdown-area">
+                <div class="countdown-title">時代祭（2028年10月22日）当日まで</div>
+                <div class="countdown-timer">
+                    <div class="timer-unit"><span id="days" class="timer-num">000</span><span class="timer-label">日</span></div>
+                    <div class="timer-unit"><span id="hours" class="timer-num">00</span><span class="timer-label">時間</span></div>
+                    <div class="timer-unit"><span id="minutes" class="timer-num">00</span><span class="timer-label">分</span></div>
+                    <div class="timer-unit"><span id="seconds" class="timer-num">00</span><span class="timer-label">秒</span></div>
+                </div>
+            </div>
+
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/0mUEP6J-320" title="時代祭動画" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            
+            <div>
+                <a href="#appeal" class="scroll-down-btn">参加について見る ▼</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- =========================================
+         参加する魅力（新規追加：歴史説明の前に配置）
+    ========================================= -->
+    <section id="appeal">
+        <div class="container fade-in">
+            <h2 class="section-title">参加する魅力</h2>
+            <p class="appeal-lead">
+                「参加して良かった」「楽しかった」。<br>
+                そう思える時代祭を、地域の皆さまと共に。<br>
+                まずは、参加することで得られるものをご紹介します。
+            </p>
+
+            <div class="appeal-grid">
+                <div class="appeal-card">
+                    <h3>平安装束を身につけて参加できる</h3>
+                    <p>普段は袖を通すことのない本格的な装束をまとい、千年の歴史を体感できます。</p>
+                </div>
+                <div class="appeal-card">
+                    <h3>京都の歴史文化の継承に関われる</h3>
+                    <p>明治から続く時代祭の一員として、大切な伝統を次の世代へ受け継ぎます。</p>
+                </div>
+                <div class="appeal-card">
+                    <h3>地域の仲間との交流が生まれる</h3>
+                    <p>準備から当日まで、町内を越えた新しいつながりと思い出が生まれます。</p>
+                </div>
+                <div class="appeal-card">
+                    <h3>家族に残せる思い出になる</h3>
+                    <p>装束姿の記念写真は、ご家族にとっても忘れられない一枚になります。</p>
+                </div>
+                <div class="appeal-card">
+                    <h3>約20年に一度の役目を地域で支える機会</h3>
+                    <p>次に巡ってくるのは約20年後。この貴重な機会を、地域みんなで支えます。</p>
+                </div>
+            </div>
+
+            <!-- 写真エリア（後日追加予定：装束姿） -->
+            <div class="photo-frame">
+                <div class="photo-placeholder">
+                    <span class="ph-label">装束姿の写真</span>
+                    <span class="ph-note">写真は後日掲載予定です</span>
+                </div>
+                <p class="photo-caption">平安装束をまとった参加者の様子（写真は後日掲載予定です）</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- =========================================
+         初めての方も歓迎（新規追加：参加への心理的ハードルを下げる）
+    ========================================= -->
+    <section id="beginner">
+        <div class="container fade-in">
+            <h2 class="section-title">初めての方も歓迎</h2>
+            <div class="beginner-box">
+                <h3>「経験がないけれど大丈夫かな」という方へ</h3>
+                <p class="beginner-sub">ほとんどの方が初めての参加です。どうぞ安心してご検討ください。</p>
+                <ul class="beginner-list">
+                    <li><strong>経験は不要です。</strong>はじめての方が大半で、年齢を問わず参加できます。</li>
+                    <li><strong>装束・着付けはサポートします。</strong>専門業者と着付け担当が当日お手伝いします。</li>
+                    <li><strong>説明会を実施予定です。</strong>当日までの流れは事前にご説明します。</li>
+                    <li><strong>役割ごとの説明があります。</strong>ご自身に合った役を選んでいただけます。</li>
+                    <li><strong>不明点は事前にご相談いただけます。</strong>まずはお問い合わせだけでも歓迎です。</li>
+                </ul>
+                <div class="soft-cta">
+                    <a href="#recruitment">自分に合った役を見てみる ▼</a>
+                </div>
+            </div>
+
+            <!-- 写真エリア（後日追加予定：着付け風景） -->
+            <div class="photo-frame">
+                <div class="photo-placeholder">
+                    <span class="ph-label">着付け風景の写真</span>
+                    <span class="ph-note">写真は後日掲載予定です</span>
+                </div>
+                <p class="photo-caption">着付けの様子（写真は後日掲載予定です）</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="recruitment">
+        <div class="container fade-in" style="padding-top: 0; padding-bottom: 0;">
+            <h2 class="section-title">参加者・ボランティア募集</h2>
+            <p class="section-note">
+                2028年の時代祭に向けて、<strong>行列に参加する方</strong>と、<strong>裏方として支える方</strong>を募集しています。<br>
+                ご自身に合った関わり方をお選びください。
+            </p>
+
+            <h3 class="sub-heading">① 行列に参加する ― 延暦文官参朝列</h3>
+            <div class="role-grid">
+                <div class="role-card">
+                    <h3>行列を歩く・乗る</h3>
+                    <p style="font-size: 0.98rem; margin-bottom: 14px; color:#444;">平安装束をまとい、御所から平安神宮まで約5kmを歩きます（一部は騎乗）。</p>
+                    <ul class="role-list-clean">
+                        <li>
+                            <span class="role-name">供奉・召具など（歩く役）</span>
+                            <span class="role-desc">最も募集人数の多い役です。装束を着て歩きます。経験は不要です。</span>
+                        </li>
+                        <li>
+                            <span class="role-name">四役（三位〜六位／騎乗）</span>
+                            <span class="role-desc">平安神宮の神事に関わる中心の役。実行委員会よりご相談のうえお願いします。</span>
+                        </li>
+                        <li>
+                            <span class="role-name">旗持・行列整理 など</span>
+                            <span class="role-desc">行列の進行を支える役です。</span>
+                        </li>
+                    </ul>
+                    <div class="role-tags">
+                        <span class="role-tag role-tag--day">主に当日</span>
+                        <span class="role-tag role-tag--prep">事前に着付け練習あり</span>
+                    </div>
+                    <p class="role-fit"><strong>こんな方に：</strong>お祭りに出てみたい方、装束を着てみたい方、ご家族で思い出を作りたい方。</p>
+                </div>
+
+                <div class="role-card">
+                    <h3>裏方で支える（行列外支援）</h3>
+                    <p style="font-size: 0.98rem; margin-bottom: 14px; color:#444;">行列には出ませんが、祭りの進行を支える大切な役です。できる作業だけのご参加も歓迎です。</p>
+                    <ul class="role-list-clean">
+                        <li>
+                            <span class="role-name">着付・着付補助</span>
+                            <span class="role-desc">装束の着付けをお手伝い。専門業者の指導があります。</span>
+                        </li>
+                        <li>
+                            <span class="role-name">糧食（お弁当・お茶）</span>
+                            <span class="role-desc">当日の食事の手配・配布。鳴海餅さんへの予約など。</span>
+                        </li>
+                        <li>
+                            <span class="role-name">撮影</span>
+                            <span class="role-desc">早朝からの記録・記念撮影。カメラがお好きな方に。</span>
+                        </li>
+                        <li>
+                            <span class="role-name">設営・受付</span>
+                            <span class="role-desc">体育館の準備、当日の参加者受付など。</span>
+                        </li>
+                        <li>
+                            <span class="role-name">運搬・警備</span>
+                            <span class="role-desc">衣装運搬の段取り、警備会社との調整など。</span>
+                        </li>
+                    </ul>
+                    <div class="role-tags">
+                        <span class="role-tag role-tag--day">当日中心の役</span>
+                        <span class="role-tag role-tag--prep">事前準備の役</span>
+                    </div>
+                    <p class="role-fit"><strong>こんな方に：</strong>人と関わるのが好きな方、段取りが得意な方、当日だけ手伝いたい方。</p>
+                </div>
+            </div>
+
+            <!-- 写真エリア（後日追加予定：裏方スタッフ） -->
+            <div class="photo-frame">
+                <div class="photo-placeholder">
+                    <span class="ph-label">裏方スタッフの写真</span>
+                    <span class="ph-note">写真は後日掲載予定です</span>
+                </div>
+                <p class="photo-caption">準備・運営を支える裏方スタッフ（写真は後日掲載予定です）</p>
+            </div>
+
+            <p class="section-note" style="margin-bottom: 24px;">
+                「まだ迷っている」という方も、まずはお気軽にご応募・お問い合わせください。<br>
+                <span style="font-size:0.96rem; color:#555;">※ご質問だけでも歓迎です。</span>
+            </p>
+
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLScKwmpM68TOX7S-qLIX_QZ1ZM9fNIc-YSipLRJUmomxeXHhcA/viewform?usp=header" target="_blank" class="btn-primary">
+                参加・ボランティアに応募する
+            </a>
+        </div>
+    </section>
+
+    <section id="history">
+        <div class="container fade-in">
+            <h2 class="section-title">大宮学区と時代祭の歴史</h2>
+            <p class="section-note">
+                ここからは、<strong>なぜ大宮学区がこの大役を担うのか</strong>、その背景をご紹介します。<br>
+                募集情報をご覧になった方も、ぜひ知っていただけると幸いです。
+            </p>
+            
+            <div class="content-block">
+                <h3>平安京創建時の有名人と大宮学区</h3>
+                <p>弘法大師空海は、当時御所に奉納する瓦職人の宿であった現在の神光院で9日間の修行を行いました。また、伝教大師最澄は現在の薬師山に草堂を結び、これが現在の一様院となっています。大宮学区は平安京の歴史と深く結びついている土地です。</p>
+            </div>
+
+            <div class="content-block">
+                <h3>なぜ大宮学区が担当するのか ― 時代祭と「第一社」</h3>
+                <p>明治維新に伴う事実上の東京遷都により、京都は人口の3分の1が転出し衰退の危機に直面しました。これを打破するための復興計画の一環として、1895年に平安遷都1100年記念祭が行われ、時代祭が始まりました。</p>
+                <p>時代祭を実行する市民組織「平安講社」の中で、大宮学区は「第一社」に属しており、歴史を遡る時代行列の最後尾を務め、祭祀の主体となる神幸列の前を進む<strong>「延暦文官参朝列（えんりゃくもんがんさんちょうれつ）」</strong>という極めて重要な役割を担当しています。</p>
+            </div>
+
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/0_6Xn8NnbQQ" title="延暦文官参朝列" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- =========================================
+         延暦文官参朝列 行列図解セクション（新規追加）
+    ========================================= -->
+    <section id="procession" class="procession-section">
+        <div class="container fade-in">
+            <h2 class="section-title">延暦文官参朝列 — 行列の構成</h2>
+            <p class="procession-intro">
+                <strong>延暦文官参朝列とは、どのような行列なのか。</strong><br>
+                大宮学区が担うこの行列は、平安時代の文官たちが御所へ参内する様子を再現したものです。<br>
+                衣装の色は位階を示し、三位（浅紫）・四位（深緋）・五位（浅緋）・六位（深緑）と役ごとに異なります。
+            </p>
+
+            <div class="procession-image-block">
+                <div class="procession-image-label">前列構成 ——— 社旗・供奉長・舎人・三位（浅紫）・蓋・馬杓持・儀戈持・召具</div>
+                <img src="retu1.jpg" alt="延暦文官参朝列 前列構成図（社旗から召具まで）">
+                <p class="procession-caption">先頭から：社旗 → 供奉長（延暦文官参朝列） → 舎人 → 三位（浅紫・乗馬） → 蓋 → 馬杓持 → 儀戈持 → 召具</p>
+            </div>
+
+            <div class="procession-image-block">
+                <div class="procession-image-label">後列構成 ——— 四位・五位・六位（各々召具を従えて）</div>
+                <img src="retu2.jpg" alt="延暦文官参朝列 後列構成図（四位・五位・六位）">
+                <p class="procession-caption">四位（深緋）→ 五位（浅緋）→ 六位（深緑）の順。各役人はそれぞれ召具（従者）2名を従えて行進します。</p>
+            </div>
+
+            <!-- 写真エリア（後日追加予定：行列全景） -->
+            <div class="photo-frame">
+                <div class="photo-placeholder">
+                    <span class="ph-label">行列全景の写真</span>
+                    <span class="ph-note">写真は後日掲載予定です</span>
+                </div>
+                <p class="photo-caption">延暦文官参朝列の全景（写真は後日掲載予定です）</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="schedule">
+        <div class="container fade-in">
+            <h2 class="section-title">スケジュール（予定）</h2>
+            <p style="text-align: center; margin-bottom: 30px;">※以下は過去の事例に基づく概略であり、時間は変更となる場合があります。</p>
+
+            <!-- 行列コース地図 -->
+            <div class="course-map-block">
+                <h3 style="font-family: var(--font-serif); font-size: 1.3rem; color: var(--color-primary); margin-bottom: 16px;">🗺 行列コース（当日ルート）</h3>
+                <img src="course.jpg" alt="時代祭 行列コース地図" id="courseMapImg" title="クリックで拡大">
+                <div class="course-map-caption">
+                    <strong>出発 12:00</strong> 京都御所（堺町御門 12:15）→ 丸太町通 → 烏丸御池（12:50）→ 御池通 → 河原町御池 → 木屋町通（13:30）→ 三条通（三条大橋 13:40）→ 三条神宮道（14:10）→ 仁王門通（14:20）→ <strong>到着 14:30</strong> 平安神宮（応天門）<br>
+                    <span style="font-size: 0.85rem; color: #666; margin-top: 6px; display: block;">※行列通過所要時間：約2時間 ／ 地図をクリックすると拡大表示されます</span>
+                </div>
+            </div>
+            
+            <div class="content-block">
+                <h3>事前準備（9月〜10月21日）</h3>
+                <table class="schedule-table">
+                    <tr>
+                        <th>9月中旬〜下旬</th>
+                        <td>全体説明会（大宮小体育館）、衣装蔵出し（平安神宮）、着付練習</td>
+                    </tr>
+                    <tr>
+                        <th>10月中旬</th>
+                        <td>宣状授与祭（平安神宮）、着付練習、予行練習</td>
+                    </tr>
+                    <tr>
+                        <th>10月21日</th>
+                        <td>衣装蔵出し、体育館ブルーシート設営、試着・着付指導、夜間警備</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="content-block">
+                <h3>時代祭 当日（10月22日）タイムライン</h3>
+                <table class="schedule-table">
+                    <tr>
+                        <th>07:30〜</th>
+                        <td>参加者受付・着付開始（大宮小体育館）</td>
+                    </tr>
+                    <tr>
+                        <th>08:45頃</th>
+                        <td>行列行進リハーサル・記念写真撮影</td>
+                    </tr>
+                    <tr>
+                        <th>10:00頃</th>
+                        <td>大宮小学校から御所へ出発（タクシー・バス等）</td>
+                    </tr>
+                    <tr>
+                        <th>10:30頃</th>
+                        <td>行在所祭（あんざいしょさい）、昼食</td>
+                    </tr>
+                    <tr>
+                        <th>12:30頃</th>
+                        <td>行列開始・列立て、出発準備</td>
+                    </tr>
+                    <tr>
+                        <th>13:30頃</th>
+                        <td><strong>延暦文官参朝列 出発</strong></td>
+                    </tr>
+                    <tr>
+                        <th>16:30頃</th>
+                        <td>還幸祭</td>
+                    </tr>
+                    <tr>
+                        <th>17:00頃</th>
+                        <td>バスにて大宮小学校へ帰還</td>
+                    </tr>
+                    <tr>
+                        <th>17:45頃</th>
+                        <td>大宮小学校到着・着替え・解散</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="content-block">
+                <h3>事後作業（10月23日〜26日）</h3>
+                <p>衣装の片付け・箱詰め、平安神宮への返却、最終点検を実施します。</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="news">
+        <div class="container fade-in">
+            <h2 class="section-title">新着情報</h2>
+            <div class="content-block">
+                <ul class="news-list">
+                    <li class="news-item">
+                        <div class="news-date">202X.XX.XX</div>
+                        <div class="news-text">時代祭全体説明会の日程が決定しました。詳細は追ってお知らせします。</div>
+                    </li>
+                    <li class="news-item">
+                        <div class="news-date">202X.XX.XX</div>
+                        <div class="news-text">参加者およびボランティアの募集を開始いたしました。</div>
+                    </li>
+                    <li class="news-item">
+                        <div class="news-date">202X.XX.XX</div>
+                        <div class="news-text">大宮学区 時代祭 特設サイトを公開しました。</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- =========================================
+         集合写真エリア（新規追加：後日写真追加予定 / 締めのメッセージ）
+    ========================================= -->
+    <section id="closing-photo" style="background:#fff; border-top:1px solid #EBE8E0;">
+        <div class="container fade-in" style="text-align:center;">
+            <p class="section-note" style="margin-bottom:28px;">
+                準備から当日まで、大宮学区の皆さまと共に。<br>
+                「参加して良かった」と思える一日を目指します。
+            </p>
+            <div class="photo-frame" style="max-width:560px; margin-left:auto; margin-right:auto;">
+                <div class="photo-placeholder">
+                    <span class="ph-label">集合写真</span>
+                    <span class="ph-note">写真は後日掲載予定です</span>
+                </div>
+                <p class="photo-caption">時代祭を終えての集合写真（写真は後日掲載予定です）</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="organization">
+        <div class="container fade-in">
+            <h2 class="section-title">実行委員会・お問い合わせ</h2>
+            
+            <div class="content-block">
+                <h3>大宮学区時代祭実行委員会</h3>
+                <p style="margin-bottom: 20px;"><strong>運営方針・透明性の確保:</strong><br>
+                大宮学区が当番学区となるには約400万円の資金が必要であり、長年にわたり町内会連合会から毎年積立を行ってきました。目的を持って積み立てた資金の適正な運用を守り、継承されてきた行事を町内会員の総意のもと、透明性をもって民主的に運営します。</p>
+                <p><strong>組織構成:</strong><br>
+                会長、副会長、事務局、会計、監査役、行列実行委員（各部門担当）により構成されています。</p>
+            </div>
+
+            <div class="content-block contact-box">
+                <h3>お問い合わせ窓口</h3>
+                <p>参加に関するご質問や、ご不明な点などがございましたら、<br>以下のメールアドレスまでお気軽にお問い合わせください。</p>
+                <a href="mailto:omiya.jidai.2028@gmail.com" class="contact-email">omiya.jidai.2028@gmail.com</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="bottom-cta">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLScKwmpM68TOX7S-qLIX_QZ1ZM9fNIc-YSipLRJUmomxeXHhcA/viewform?usp=header" target="_blank">参加・ボランティアに応募する</a>
+    </div>
+
+    <!-- 地図拡大モーダル -->
+    <div class="map-modal" id="mapModal">
+        <button class="map-modal-close" id="mapModalClose" aria-label="閉じる">&times;</button>
+        <img src="course.jpg" alt="行列コース地図（拡大）">
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            // 0. 背景動画は必ず無音で再生（ブラウザの自動再生制限対策）
+            const heroVideo = document.querySelector(".hero-bg-video");
+            if (heroVideo) {
+                heroVideo.muted = true;        // 念のためプロパティでも無音を保証
+                heroVideo.volume = 0;
+                const tryPlay = heroVideo.play();
+                if (tryPlay && typeof tryPlay.catch === "function") {
+                    tryPlay.catch(() => { /* 自動再生がブロックされても静かに無視 */ });
+                }
+            }
+
+            // 0b. Hero内のコンテンツを、動画が映ってから「順番に」フェードインさせる。
+            //     動画 →(0.5秒)→ キャッチコピー →(1.0秒)→「約20年に一度の大役」の箱、の順。
+            //     箱より下（カウントダウン・動画・ボタン）は箱と一緒に表示し、
+            //     見出しの上に空白が残らないよう上から順に出す。
+            const heroContainer = document.querySelector('#hero > .container');
+            const heroCatch     = document.querySelector('#hero .hero-catch-container'); // 『なくよ〜』
+            const heroRoleBoxEl = document.querySelector('#hero .hero-role-block');       // 約20年に一度の大役
+            const heroRest = [
+                document.querySelector('#hero #countdown'),
+                document.querySelector('#hero .video-container'),
+                document.querySelector('#hero .scroll-down-btn')
+            ].filter(Boolean);
+
+            if (heroContainer && heroVideo) {
+                // コンテナ自体は observer の監視から外し、常に「枠」として表示扱いにする
+                heroContainer.classList.remove('fade-in');
+                heroContainer.style.opacity = '1';
+                heroContainer.style.transform = 'none';
+
+                // 各パーツを最初は隠す（opacityのみ＝レイアウトは動かさず、ちらつき防止）
+                const heroParts = [heroCatch, heroRoleBoxEl, ...heroRest].filter(Boolean);
+                heroParts.forEach(el => {
+                    el.style.opacity = '0';
+                    el.style.transition = 'opacity 0.6s ease-out';
+                });
+
+                function showEl(el) { if (el) el.style.opacity = '1'; }
+
+                let heroRevealed = false;
+                function revealHero() {
+                    if (heroRevealed) return;
+                    heroRevealed = true;
+                    // 動画の0.5秒後：キャッチコピー
+                    setTimeout(() => showEl(heroCatch), 500);
+                    // 動画の1.0秒後：「約20年に一度の大役」の箱（＋それ以降の要素）
+                    setTimeout(() => {
+                        showEl(heroRoleBoxEl);
+                        heroRest.forEach(showEl);
+                    }, 1000);
+                }
+
+                // canplay: 動画の最初のフレームが描画可能になった瞬間
+                heroVideo.addEventListener('canplay', revealHero, { once: true });
+                // フォールバック: 動画が来なくても 1.2 秒後には必ず表示
+                setTimeout(revealHero, 1200);
+            }
+
+            // 0c. スマホでは、動画を「箱の下端＋溶けしろ(MELT)」までの高さにし、
+            //     箱の足元から MELT px かけて映像を透明化（マスク）してクリーム背景へ溶かす。
+            //     → 箱が映像の床に接地し、その下は映像がふわっと消える上品な見え方。
+            //     PC（769px以上）では従来どおりHero全体（CSSの height:100%）に戻す。
+            const heroSection = document.getElementById("hero");
+            const heroRoleBox = document.querySelector(".hero-role-block");
+            const mqMobile = window.matchMedia("(max-width: 768px)");
+            const MELT = 90; // 箱の下で映像が溶けて消える距離(px)。CSSのcountdown margin-topと対応。
+
+            function fitHeroVideo() {
+                if (!heroVideo || !heroSection) return;
+                if (mqMobile.matches && heroRoleBox) {
+                    const heroTop = heroSection.getBoundingClientRect().top;
+                    const boxBottom = heroRoleBox.getBoundingClientRect().bottom;
+                    const h = Math.round(boxBottom - heroTop + MELT);
+                    if (h > 0) {
+                        heroVideo.style.height = h + "px";
+                        // 箱の下端(=100%-MELT)までは不透明、そこから下端へ向け透明に
+                        const mask = "linear-gradient(to bottom, #000 0, #000 calc(100% - "
+                            + MELT + "px), transparent 100%)";
+                        heroVideo.style.webkitMaskImage = mask;
+                        heroVideo.style.maskImage = mask;
+                    }
+                } else {
+                    heroVideo.style.height = "";   // CSSの 100% に戻す
+                    heroVideo.style.webkitMaskImage = "";
+                    heroVideo.style.maskImage = "";
+                }
+            }
+
+            fitHeroVideo();
+            // フォント読込後にレイアウトが変わることがあるので再計測
+            if (document.fonts && document.fonts.ready) {
+                document.fonts.ready.then(fitHeroVideo);
+            }
+            window.addEventListener("load", fitHeroVideo);
+            // リサイズは連続発火するので、止まった瞬間に1回だけ計算（デバウンス）
+            let fitResizeTimer = null;
+            window.addEventListener("resize", () => {
+                clearTimeout(fitResizeTimer);
+                fitResizeTimer = setTimeout(fitHeroVideo, 150);
+            });
+            // 画面回転は即時に合わせ直す
+            window.addEventListener("orientationchange", fitHeroVideo);
+
+            // 「最初」リンクは常にページ最上部（座標0）へ確実に戻す
+            const topLink = document.querySelector('.nav-links a[href="#hero"]');
+            if (topLink) {
+                topLink.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                });
+            }
+
+            // 1. カウントダウンタイマー機能
+            const targetDate = new Date("2028-10-22T00:00:00+09:00").getTime();
+            let timerInterval = null;   // 先に宣言して当日処理での参照エラーを防ぐ
+
+            function padNum(num, len) {
+                return ('000' + num).slice(-len);
+            }
+
+            function setCountText(id, value) {
+                const el = document.getElementById(id);
+                if (el) el.textContent = value;   // 要素が無くても止まらない
+            }
+
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const diff = targetDate - now;
+
+                const countdownArea = document.getElementById("countdown");
+
+                if (diff <= 0) {
+                    if (countdownArea) {
+                        countdownArea.innerHTML = "<div class='countdown-title' style='font-size:1.3rem; color:var(--color-primary);'>時代祭 当日です</div>";
+                    }
+                    if (timerInterval) clearInterval(timerInterval);
+                    return;
+                }
+
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                setCountText("days", padNum(days, 3));
+                setCountText("hours", padNum(hours, 2));
+                setCountText("minutes", padNum(minutes, 2));
+                setCountText("seconds", padNum(seconds, 2));
+            }
+
+            updateCountdown();
+            timerInterval = setInterval(updateCountdown, 1000);
+
+            // 2. フェードイン用アニメーション
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.05
+            };
+
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+
+            // 3. 地図クリック拡大モーダル
+            const mapImg = document.getElementById("courseMapImg");
+            const mapModal = document.getElementById("mapModal");
+            const mapModalClose = document.getElementById("mapModalClose");
+
+            if (mapImg && mapModal) {
+                mapImg.addEventListener("click", () => {
+                    mapModal.classList.add("open");
+                });
+                mapModalClose.addEventListener("click", () => {
+                    mapModal.classList.remove("open");
+                });
+                mapModal.addEventListener("click", (e) => {
+                    if (e.target === mapModal) {
+                        mapModal.classList.remove("open");
+                    }
+                });
+                document.addEventListener("keydown", (e) => {
+                    if (e.key === "Escape") mapModal.classList.remove("open");
+                });
+            }
+        });
+    </script>
+</body>
+</html>
